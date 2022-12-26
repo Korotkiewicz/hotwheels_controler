@@ -75,6 +75,7 @@ PODS:
   - glog (0.3.5)
   - hermes-engine (0.70.6)
   - libevent (2.1.12)
+  - MultiplatformBleAdapter (0.1.9)
   - OpenSSL-Universal (1.1.1100)
   - RCT-Folly (2021.07.22.00):
     - boost
@@ -302,6 +303,9 @@ PODS:
   - React-jsinspector (0.70.6)
   - React-logger (0.70.6):
     - glog
+  - react-native-ble-plx (2.0.3):
+    - MultiplatformBleAdapter (= 0.1.9)
+    - React-Core
   - React-perflogger (0.70.6)
   - React-RCTActionSheet (0.70.6):
     - React-Core/RCTActionSheetHeaders (= 0.70.6)
@@ -420,6 +424,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - react-native-ble-plx (from `../node_modules/react-native-ble-plx`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -448,6 +453,7 @@ SPEC REPOS:
     - FlipperKit
     - fmt
     - libevent
+    - MultiplatformBleAdapter
     - OpenSSL-Universal
     - SocketRocket
     - YogaKit
@@ -495,6 +501,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-ble-plx:
+    :path: "../node_modules/react-native-ble-plx"
   React-perflogger:
     :path: "../node_modules/react-native/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -541,6 +549,7 @@ SPEC CHECKSUMS:
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
   hermes-engine: 2af7b7a59128f250adfd86f15aa1d5a2ecd39995
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
+  MultiplatformBleAdapter: 5a6a897b006764392f9cef785e4360f54fb9477d
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   RCT-Folly: 0080d0a6ebf2577475bda044aa59e2ca1f909cda
   RCTRequired: e1866f61af7049eb3d8e08e8b133abd38bc1ca7a
@@ -557,6 +566,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: b4a65947391c658450151275aa406f2b8263178f
   React-jsinspector: 60769e5a0a6d4b32294a2456077f59d0266f9a8b
   React-logger: 1623c216abaa88974afce404dc8f479406bbc3a0
+  react-native-ble-plx: f10240444452dfb2d2a13a0e4f58d7783e92d76e
   React-perflogger: 8c79399b0500a30ee8152d0f9f11beae7fc36595
   React-RCTActionSheet: 7316773acabb374642b926c19aef1c115df5c466
   React-RCTAnimation: 5341e288375451297057391227f691d9b2326c3d
