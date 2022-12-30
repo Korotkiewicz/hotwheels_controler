@@ -9,6 +9,7 @@
 import React, {useEffect, useState} from 'react';
 import type {Node} from 'react';
 import {
+  Alert,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -25,6 +26,7 @@ import mainStyle from '../styles/main-style';
 import Section from '../components/section';
 import DevicesList from '../components/devices-list';
 import type PropsWithDevice from '../props-with-device';
+import {BleManager} from 'react-native-ble-plx';
 
 const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -33,12 +35,58 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const [blePoweredOn, setBlePoweredOn] = useState(false);
   const [devices, setDevices] = useState([]);
+  const [bleManager: BleManager, setBleManager] = useState(new BleManager());
 
-  // Similar to componentDidMount and componentDidUpdate:
-  // useEffect(() => {
-  //
-  // });
+  useEffect(() => {
+    const subscription = bleManager.onStateChange((state) => {
+      console.log(state);
+      const isPoweredOn = state === 'PoweredOn';
+      setBlePoweredOn(isPoweredOn);
+      if (isPoweredOn) {
+        scanDevices();
+      }
+    }, true);
+  }, [props.device]);
+
+  const scanDevices = () => {
+    setDevices([]);
+    bleManager.startDeviceScan(null, null, (error, device) => {
+      if (error) {
+        // Handle error (scanning will be stopped automatically)
+        return;
+      }
+
+      setDevices(oldDevices => [...oldDevices, device]);
+    });
+  };
+
+  const selectDevice = (device: Device) => {
+    device.connect()
+      .then((device) => {
+        return device.discoverAllServicesAndCharacteristics();
+      })
+      .then((device) => {
+        props.setDevice(device);
+        Alert.prompt(
+          'Success',
+          'Correctly connected to ' + (device.localName || device.name),
+        );
+        return device.services();
+      })
+      .then((services: Service[]) => {
+        services.forEach((service: Service) => Alert.prompt('Service', service.toString()));
+      })
+      .catch((error) => {
+        Alert.prompt(
+          'Error durring connection',
+          error
+        );
+      });
+
+  };
+
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -57,7 +105,12 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
             Select Hot Wheels with Bluetooth remote control
           </Section>
           <Section title="Devices:">
-            <DevicesList devices={devices} setDevice={props.setDevice}/>
+            {blePoweredOn ?
+              <DevicesList devices={devices} setDevice={selectDevice}/> :
+              <View style={styles.device}>
+                <Text style={styles.disabledText}>Waiting for bluetooth...</Text>
+              </View>
+            }
           </Section>
         </View>
       </ScrollView>
