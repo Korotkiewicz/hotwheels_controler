@@ -1,8 +1,11 @@
 
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
-import {Text, useColorScheme, View} from 'react-native';
+import {StyleSheet, Text, useColorScheme, View} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import mainStyle from '../styles/main-style';
+
+const styles = StyleSheet.create(mainStyle);
 
 const Section = ({children, title}): Node => {
     const isDarkMode = useColorScheme() === 'dark';

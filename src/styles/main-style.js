@@ -1,5 +1,7 @@
 const mainStyle = {
     sectionContainer: {
+        flex: 1,
+        flexDirection: "column",
         marginTop: 32,
         paddingHorizontal: 24,
     },
@@ -15,6 +17,15 @@ const mainStyle = {
     highlight: {
         fontWeight: '700',
     },
+    disabledText: {
+        color: "gray",
+    },
+    device: {
+        flex: 1,
+        paddingTop: 15,
+        fontSize: 18,
+        fontWeight: '400',
+    }
 };
 
 export default mainStyle;

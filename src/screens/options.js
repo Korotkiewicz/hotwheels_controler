@@ -9,21 +9,23 @@
 import React from 'react';
 import type {Node} from 'react';
 import {
+  Alert,
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
-  StyleSheet,
-  Text,
   useColorScheme,
   View,
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import mainStyle from '../styles/main-style';
 import Section from '../components/section';
+import {useNavigation} from '@react-navigation/native';
+import type PropsWithDevice from '../props-with-device';
 
-const Home: () => Node = () => {
+const Options: (screenProps) => Node = (props: PropsWithDevice) => {
   const isDarkMode = useColorScheme() === 'dark';
+  const navigation = useNavigation();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -42,14 +44,19 @@ const Home: () => Node = () => {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title="Title">
-            Choose option below:
+          <Section>
+            This app will help you to drive your hot wheels via Bluetooth.
           </Section>
-          <Section title="Conntect to bluetooth">
-            Connect to bluetooth
-          </Section>
-          <Section title="Drive a car">
-            Drive a car (if connected)
+          <Section title="Options:">
+            <Button
+              title={!props.device ? 'Connect to hot wheels' : 'Disconnect from hot wheels'}
+              onPress={() => navigation.navigate('SelectBluetooth')}
+            />
+            <Button
+              title="Drive a car"
+              disabled={!props.device}
+              onPress={() => Alert.alert('Simple Button pressed')}
+            />
           </Section>
         </View>
       </ScrollView>
@@ -57,6 +64,4 @@ const Home: () => Node = () => {
   );
 };
 
-const styles = StyleSheet.create(mainStyle);
-
-export default Home;
+export default Options;
