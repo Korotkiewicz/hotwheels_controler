@@ -38,6 +38,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const [bleState, setBleState] = useState('unknown');
   const [blePoweredOn, setBlePoweredOn] = useState(false);
   const [devices, setDevices] = useState([]);
   const [bleManager: BleManager, setBleManager] = useState(new BleManager());
@@ -45,7 +46,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
   useFocusEffect(
     React.useCallback(() => {
       const subscription = bleManager.onStateChange((state) => {
-        console.log(state);
+        setBleState(state);
         const isPoweredOn = state === 'PoweredOn';
         setBlePoweredOn(isPoweredOn);
         if (isPoweredOn) {
@@ -132,7 +133,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
           <Section>
-            Select Hot Wheels with Bluetooth remote control
+            Select Hot Wheels RC with Bluetooth (state: {bleState})
           </Section>
           <Section title="Devices:">
             {blePoweredOn ?
