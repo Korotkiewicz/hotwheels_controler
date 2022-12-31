@@ -27,6 +27,7 @@ import Section from '../components/section';
 import DevicesList from '../components/devices-list';
 import type PropsWithDevice from '../props-with-device';
 import {BleManager, Characteristic} from 'react-native-ble-plx';
+import {useFocusEffect} from '@react-navigation/native';
 
 const SERVICE_UUID = '5dfa6919-ce04-4e7c-8ddd-3d7a4060a2e0';
 
@@ -41,27 +42,35 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
   const [devices, setDevices] = useState([]);
   const [bleManager: BleManager, setBleManager] = useState(new BleManager());
 
-  useEffect(() => {
-    const subscription = bleManager.onStateChange((state) => {
-      console.log(state);
-      const isPoweredOn = state === 'PoweredOn';
-      setBlePoweredOn(isPoweredOn);
-      if (isPoweredOn) {
-        Alert.prompt('Status', 'ble power on');
-        scanDevices();
-      }
-    }, true);
-  }, [props.device, bleManager]);
+  useFocusEffect(
+    React.useCallback(() => {
+      const subscription = bleManager.onStateChange((state) => {
+        console.log(state);
+        const isPoweredOn = state === 'PoweredOn';
+        setBlePoweredOn(isPoweredOn);
+        if (isPoweredOn) {
+          Alert.alert('Status', 'ble power on');
+          scanDevices();
+          subscription.remove();
+        }
+      }, true);
+
+      return () => {
+        subscription.remove();
+        bleManager.stopDeviceScan();
+      };
+    }, [props.device, bleManager]),
+  );
 
   const scanDevices = () => {
-    Alert.prompt('Status', 'start scan devices');
+    Alert.alert('Status', 'start scan devices');
     setDevices([]);
     bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
         // Handle error (scanning will be stopped automatically)
         return;
       }
-      Alert.prompt('Detect device', device.localName || device.name);
+      Alert.alert('Detect device', device.localName || device.name);
 
       setDevices(oldDevices => [...oldDevices, device]);
     });
@@ -81,14 +90,14 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
 
         device.characteristicsForService(SERVICE_UUID)
           .then((characteristics: Characteristic) => {
-          Alert.prompt('Characteristics', characteristics);
-        })
+            Alert.alert('Characteristics', characteristics);
+          })
           .catch((error) => {
-          Alert.prompt(
-            'Error durring connection',
-            error
-          );
-        });
+            Alert.alert(
+              'Error durring connection',
+              error,
+            );
+          });
 
 
         return device.services();
@@ -100,7 +109,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
       .catch((error) => {
         Alert.prompt(
           'Error durring connection',
-          error
+          error,
         );
       });
 
