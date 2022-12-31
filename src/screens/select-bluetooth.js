@@ -19,9 +19,7 @@ import {
   View,
 } from 'react-native';
 
-import {
-  Colors,
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 import mainStyle from '../styles/main-style';
 import Section from '../components/section';
 import DevicesList from '../components/devices-list';
@@ -41,16 +39,28 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
   const [bleState, setBleState] = useState('unknown');
   const [blePoweredOn, setBlePoweredOn] = useState(false);
   const [devices, setDevices] = useState([]);
-  const [bleManager: BleManager, setBleManager] = useState(new BleManager());
+  const [bleManager: BleManager, setBleManager] = useState(null);
+
+  useEffect(() => {
+    return () => {
+      if (bleManager !== null) {
+        bleManager.destroy();
+      }
+    };
+  }, [bleManager]);
 
   useFocusEffect(
     React.useCallback(() => {
-      const subscription = bleManager.onStateChange((state) => {
+      const manager = bleManager || new BleManager();
+      if (bleManager === null) {
+        setBleManager(manager);
+      }
+
+      const subscription = manager.onStateChange(state => {
         setBleState(state);
         const isPoweredOn = state === 'PoweredOn';
         setBlePoweredOn(isPoweredOn);
         if (isPoweredOn) {
-          Alert.alert('Status', 'ble power on');
           scanDevices();
           subscription.remove();
         }
@@ -58,66 +68,64 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
 
       return () => {
         subscription.remove();
-        bleManager.stopDeviceScan();
+        manager.stopDeviceScan();
       };
-    }, [props.device, bleManager]),
+    }, [bleManager, scanDevices]),
   );
 
-  const scanDevices = () => {
-    Alert.alert('Status', 'start scan devices');
+  const scanDevices = React.useCallback(() => {
     setDevices([]);
-    bleManager.startDeviceScan(null, null, (error, device) => {
-      Alert.alert('scan', 'detected sth');
+    bleManager.startDeviceScan(null, {allowDuplicates: false}, (error, device) => {
       if (error) {
         Alert.alert('error', error.message);
         // Handle error (scanning will be stopped automatically)
         return;
       }
-      Alert.alert('Detect device', device.localName || device.name);
 
-      setDevices(oldDevices => [...oldDevices, device]);
+      setDevices(oldDevices => {
+        if (oldDevices.indexOf(device) !== false) {
+          return oldDevices;
+        }
+
+        return [...oldDevices, device]
+      });
     });
-  };
+  }, [bleManager]);
 
   const selectDevice = (device: Device) => {
-    device.connect()
-      .then((device) => {
+    device
+      .connect()
+      .then(device => {
         return device.discoverAllServicesAndCharacteristics();
       })
-      .then((device) => {
+      .then(device => {
         props.setDevice(device);
         Alert.prompt(
           'Success',
           'Correctly connected to ' + (device.localName || device.name),
         );
 
-        device.characteristicsForService(SERVICE_UUID)
+        device
+          .characteristicsForService(SERVICE_UUID)
           .then((characteristics: Characteristic) => {
             Alert.alert('Characteristics', characteristics);
           })
-          .catch((error) => {
-            Alert.alert(
-              'Error durring connection',
-              error,
-            );
+          .catch(error => {
+            Alert.alert('Error durring connection', error);
           });
-
 
         return device.services();
       })
       .then((services: Service[]) => {
-        services.forEach((service: Service) => Alert.prompt('Service', service.toString()));
+        services.forEach((service: Service) =>
+          Alert.prompt('Service', service.toString()),
+        );
         return;
       })
-      .catch((error) => {
-        Alert.prompt(
-          'Error durring connection',
-          error,
-        );
+      .catch(error => {
+        Alert.prompt('Error durring connection', error);
       });
-
   };
-
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -136,12 +144,15 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
             Select Hot Wheels RC with Bluetooth (state: {bleState})
           </Section>
           <Section title="Devices:">
-            {blePoweredOn ?
-              <DevicesList devices={devices} setDevice={selectDevice}/> :
+            {blePoweredOn ? (
+              <DevicesList devices={devices} setDevice={selectDevice} />
+            ) : (
               <View style={styles.device}>
-                <Text style={styles.disabledText}>Waiting for bluetooth...</Text>
+                <Text style={styles.disabledText}>
+                  Waiting for bluetooth...
+                </Text>
               </View>
-            }
+            )}
           </Section>
         </View>
       </ScrollView>
