@@ -26,7 +26,9 @@ import mainStyle from '../styles/main-style';
 import Section from '../components/section';
 import DevicesList from '../components/devices-list';
 import type PropsWithDevice from '../props-with-device';
-import {BleManager} from 'react-native-ble-plx';
+import {BleManager, Characteristic} from 'react-native-ble-plx';
+
+const SERVICE_UUID = '5dfa6919-ce04-4e7c-8ddd-3d7a4060a2e0';
 
 const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -45,18 +47,21 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
       const isPoweredOn = state === 'PoweredOn';
       setBlePoweredOn(isPoweredOn);
       if (isPoweredOn) {
+        Alert.prompt('Status', 'ble power on');
         scanDevices();
       }
     }, true);
-  }, [props.device]);
+  }, [props.device, bleManager]);
 
   const scanDevices = () => {
+    Alert.prompt('Status', 'start scan devices');
     setDevices([]);
     bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
         // Handle error (scanning will be stopped automatically)
         return;
       }
+      Alert.prompt('Detect device', device.localName || device.name);
 
       setDevices(oldDevices => [...oldDevices, device]);
     });
@@ -73,10 +78,24 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
           'Success',
           'Correctly connected to ' + (device.localName || device.name),
         );
+
+        device.characteristicsForService(SERVICE_UUID)
+          .then((characteristics: Characteristic) => {
+          Alert.prompt('Characteristics', characteristics);
+        })
+          .catch((error) => {
+          Alert.prompt(
+            'Error durring connection',
+            error
+          );
+        });
+
+
         return device.services();
       })
       .then((services: Service[]) => {
         services.forEach((service: Service) => Alert.prompt('Service', service.toString()));
+        return;
       })
       .catch((error) => {
         Alert.prompt(

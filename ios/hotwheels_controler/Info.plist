@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.0.2</string>
+	<string>0.0.3</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -36,9 +36,9 @@
 		</dict>
 	</dict>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-    <string>Our app uses bluetooth to find, connect with Hot Wheels car. Please allow access to it.</string>
-    <key>NSBluetoothPeripheralUsageDescription</key>
-    <string>Our app uses bluetooth to find, connect with Hot Wheels car. Please allow access to it.</string>
+	<string>Our app uses bluetooth to find, connect with Hot Wheels car. Please allow access to it.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Our app uses bluetooth to find, connect with Hot Wheels car. Please allow access to it.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
