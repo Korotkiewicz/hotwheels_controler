@@ -67,6 +67,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
     setDevices([]);
     bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
+        Alert.alert('error', error);
         // Handle error (scanning will be stopped automatically)
         return;
       }
