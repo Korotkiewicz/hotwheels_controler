@@ -13,12 +13,14 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SelectBluetooth from './src/screens/select-bluetooth';
 import Options from './src/screens/options';
 import {Device} from 'react-native-ble-plx';
+import {useColorScheme} from 'react-native';
 
 
 const Stack = createNativeStackNavigator();
 
 const App: () => Node = () => {
   let device: Device;
+  const isDarkMode = useColorScheme() === 'dark';
 
   return (
     <NavigationContainer>
