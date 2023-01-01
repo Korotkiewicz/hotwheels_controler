@@ -22,6 +22,7 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Section from '../components/section';
 import {useNavigation} from '@react-navigation/native';
 import type PropsWithDevice from '../props-with-device';
+import mainStyle from '../styles/main-style';
 
 const Options: (screenProps) => Node = (props: PropsWithDevice) => {
   const isDarkMode = useColorScheme() === 'dark';
