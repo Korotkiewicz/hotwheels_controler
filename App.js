@@ -34,7 +34,7 @@ const App: () => Node = () => {
 
   useEffect(() => {
     const manager = bleManager || new BleManager();
-    if (manager === null) {
+    if (bleManager === null) {
       setBleManager(manager);
     }
 
