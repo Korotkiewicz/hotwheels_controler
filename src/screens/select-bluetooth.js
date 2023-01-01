@@ -115,24 +115,25 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
           'Correctly connected to ' + (device.localName || device.name),
         );
 
-        device
-          .characteristicsForService(SERVICE_UUID)
-          // .characteristics()
-          .then((characteristics: Characteristic) => {
-             characteristics.forEach((characteristic) => {
-                   Alert.alert('characteristic', characteristic.uuid);
-              });
-          })
-          .catch(error => {
-            Alert.alert('Error durring fetching characteristics', error.message);
-          });
-
         return device.services();
       })
       .then((services: Service[]) => {
-        services.forEach((service: Service) =>
-          Alert.alert('Service', service.uuid),
-        );
+        services.forEach((service: Service) => {
+          Alert.alert('Service', service.uuid);
+
+          device
+            // .characteristicsForService(SERVICE_UUID)
+            .characteristicsForService(service.uuid)
+            // .characteristics()
+            .then((characteristics: Characteristic) => {
+              characteristics.forEach((characteristic) => {
+                Alert.alert('characteristic', characteristic.uuid);
+              });
+            })
+            .catch(error => {
+              Alert.alert('Error durring fetching characteristics', error.message);
+            });
+        });
         return;
       })
       .catch(error => {
