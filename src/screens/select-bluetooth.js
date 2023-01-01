@@ -54,7 +54,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
       const manager = bleManager || new BleManager();
       if (bleManager === null) {
         setBleManager(manager);
-        setBleState(await manager.state());
+        //setBleState(await manager.state());
       }
 
       const subscription = manager.onStateChange(state => {
@@ -76,20 +76,19 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
 
   const scanDevices = React.useCallback(() => {
     setDevices([]);
-    bleManager.startDeviceScan(null, {allowDuplicates: false}, (error, device) => {
+    bleManager.startDeviceScan(null, {allowDuplicates: false}, (error, newDevice) => {
+      setBleState('Scanning');
       if (error) {
         Alert.alert('error', error.message);
         // Handle error (scanning will be stopped automatically)
-        scanDevices();
+        setTimeout(() => scanDevices(), 100);
         return;
       }
 
       setDevices(oldDevices => {
-        if (oldDevices.indexOf(device) !== false) {
-          return oldDevices;
-        }
+        oldDevices = oldDevices.filter(oldDevice => oldDevice.id !== newDevice.id);
 
-        return [...oldDevices, device]
+        return [newDevice, ...oldDevices]
       });
     });
   }, [bleManager]);
