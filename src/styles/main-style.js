@@ -25,6 +25,10 @@ const mainStyle = {
         paddingTop: 15,
         fontSize: 18,
         fontWeight: '400',
+    }, 
+    selectDevice: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#B8B8B8',
     }
 };
 
