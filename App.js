@@ -19,7 +19,7 @@ import Options from './src/screens/options';
 import {BleManager, Device} from 'react-native-ble-plx';
 import {useColorScheme} from 'react-native';
 import Drive from './src/screens/drive';
-
+import {useNavigation} from '@react-navigation/native';
 
 const Stack = createNativeStackNavigator();
 
