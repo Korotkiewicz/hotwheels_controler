@@ -8,7 +8,7 @@
 
 import React, {useEffect, useState} from 'react';
 import type {Node} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer,DefaultTheme,DarkTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SelectBluetooth from './src/screens/select-bluetooth';
 import Options from './src/screens/options';
@@ -46,7 +46,7 @@ const App: () => Node = () => {
   }, [bleManager]);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={isDarkMode ? DarkTheme : DefaultTheme}>
       <Stack.Navigator>
         <Stack.Screen
           name="Options"
