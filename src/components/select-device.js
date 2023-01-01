@@ -13,10 +13,7 @@ const SelectDevice = (props: PropsWithDevice): Node => {
     <View style={styles.selectDevice}>
       <TouchableOpacity
         style={styles.selectDeviceButton}
-        onPress={() => {
-          props.setDevice(props.device);
-          return navigation.navigate('Options');
-        }}
+        onPress={() => props.setDevice(props.device)}
       >
         <View style={styles.selectDeviceNameWrapper}>
           <Text style={styles.selectDeviceName}>{name}</Text>
