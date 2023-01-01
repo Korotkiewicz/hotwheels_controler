@@ -63,7 +63,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
           .catch(error => {
             Alert.alert('Error durring disconnection', error.message + ' Reason: ' + error.reason);
           });
-
+        props.setDevice(null);
       }
 
       const subscription = manager.onStateChange(state => {
@@ -111,8 +111,8 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
       .then(device => {
         props.setDevice(device);
         Alert.alert(
-          'Success',
-          'Correctly connected to ' + (device.localName || device.name),
+          'Correctly connected to',
+          (device.localName || device.name || device.title || device.id),
         );
 
         return device.services();
@@ -159,7 +159,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
           </Section>
           <Section title="Devices:">
             {blePoweredOn ? (
-              <DevicesList devices={devices} setDevice={selectDevice} />
+              <DevicesList devices={devices} selectDevice={selectDevice} />
             ) : (
               <View style={styles.device}>
                 <Text style={styles.disabledText}>

@@ -22,6 +22,14 @@ const App: () => Node = () => {
   const [device, setDevice] = useState(null);
   const isDarkMode = useColorScheme() === 'dark';
 
+  const selectDevice = (newDevice: Device) => {
+    if (newDevice && newDevice.isConnected()) {
+      setDevice(newDevice);
+    } else {
+      setDevice(null);
+    }
+  };
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -35,7 +43,7 @@ const App: () => Node = () => {
           name="SelectBluetooth"
           options={{title: 'Select a car'}}
         >
-          {props => <SelectBluetooth {...props} device={device} setDevice={setDevice} />}
+          {props => <SelectBluetooth {...props} device={device} setDevice={selectDevice} />}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
