@@ -13,7 +13,7 @@ import {
   Button,
   SafeAreaView,
   ScrollView,
-  StatusBar,
+  StatusBar, StyleSheet,
   useColorScheme,
   View,
 } from 'react-native';
@@ -49,22 +49,25 @@ const Options: (screenProps) => Node = (props: PropsWithDevice) => {
             This app will help you to drive your hot wheels via Bluetooth.
           </Section>
           <Section title="Options:">
-            <Button
-              styles={styles.optionsButton}
-              title={!props.device ? 'Connect to hot wheels' : 'Disconnect from hot wheels'}
-              onPress={() => navigation.navigate('SelectBluetooth')}
-            />
-            <Button
-              styles={styles.optionsButton}
-              title="Drive a car"
-              disabled={!props.device}
-              onPress={() => Alert.alert('Simple Button pressed')}
-            />
+            <View styles={styles.optionsButtonContainer}>
+              <Button
+                styles={styles.optionsButton}
+                title={!props.device ? 'Connect to hot wheels' : 'Disconnect from hot wheels'}
+                onPress={() => navigation.navigate('SelectBluetooth')}
+              />
+              <Button
+                styles={styles.optionsButton}
+                title="Drive a car"
+                disabled={!props.device}
+                onPress={() => Alert.alert('Simple Button pressed')}
+              />
+            </View>
           </Section>
         </View>
       </ScrollView>
     </SafeAreaView>
-  );
+  )
+    ;
 };
 
 const styles = StyleSheet.create(mainStyle);

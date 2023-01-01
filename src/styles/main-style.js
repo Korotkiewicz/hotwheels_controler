@@ -21,7 +21,7 @@ const mainStyle = {
         color: "gray",
     },
     optionsButtonContainer: {
-        alignItems: 'center',
+        alignItems: 'left',
         width: '100%',
     },
     optionsButton: {
