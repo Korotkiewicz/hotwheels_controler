@@ -12,7 +12,8 @@ const SelectDevice = (props: PropsWithDevice): Node => {
   return (
     <View style={styles.selectDevice}>
       <TouchableOpacity
-        style={styles.selectDeviceButton}
+        disabled={props.disabled}
+        style={[styles.selectDeviceButton, props.disabled ? styles.disabledButton : {}]}
         onPress={() => props.setDevice(props.device)}
       >
         <View style={styles.selectDeviceNameWrapper}>
