@@ -47,13 +47,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
       }
 
       if(props.device && props.device.isConnected()) {
-        props.device.cancelConnection()
-          .then((device) => {
-            Alert.alert('Disconnected', device.id);
-          })
-          .catch(error => {
-            Alert.alert('Error durring disconnection', error.message + ' Reason: ' + error.reason);
-          });
+        props.bleManager.cancelDeviceConnection(props.device.uuid)
         props.setDevice(null);
       }
 
