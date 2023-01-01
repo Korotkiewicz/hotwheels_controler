@@ -59,7 +59,7 @@ const Options: (screenProps) => Node = (props: PropsWithDevice) => {
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
-                style={Object.assign(styles.optionsButton, !props.device ? styles.disabledButton : {})}
+                style={[styles.optionsButton, !props.device ? styles.disabledButton : {}]}
                 disabled={!props.device}
                 onPress={() => navigation.navigate('Drive')}
               >
