@@ -42,6 +42,11 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
 
   useFocusEffect(
     React.useCallback(() => {
+      if (props.bleManager === null) {
+        return;
+      }
+
+      Alert.alert(props.bleManager.state());
       if(props.device && props.device.isConnected()) {
         props.device.cancelConnection()
           .then((device) => {
@@ -58,7 +63,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
         const isPoweredOn = state === 'PoweredOn';
         setBlePoweredOn(isPoweredOn);
         if (isPoweredOn) {
-          subscription.remove();
+          subscription?.remove();
           scanDevices();
         }
       }, true);
