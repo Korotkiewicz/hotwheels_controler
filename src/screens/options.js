@@ -50,10 +50,12 @@ const Options: (screenProps) => Node = (props: PropsWithDevice) => {
           </Section>
           <Section title="Options:">
             <Button
+              styles={styles.optionsButton}
               title={!props.device ? 'Connect to hot wheels' : 'Disconnect from hot wheels'}
               onPress={() => navigation.navigate('SelectBluetooth')}
             />
             <Button
+              styles={styles.optionsButton}
               title="Drive a car"
               disabled={!props.device}
               onPress={() => Alert.alert('Simple Button pressed')}
@@ -64,5 +66,7 @@ const Options: (screenProps) => Node = (props: PropsWithDevice) => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create(mainStyle);
 
 export default Options;
