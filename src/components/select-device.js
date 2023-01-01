@@ -15,7 +15,7 @@ const SelectDevice = (props: PropsWithDevice): Node => {
       <Text>{props.device.name}</Text>
       <Text>{props.device.localName}</Text>
       <Button
-        title={props.device?.title || props.device?.name || props.device?.localName || 'Unknown'}
+        title={props.device?.title || props.device?.name || props.device?.localName || props.device?.id || 'Unknown'}
         onPress={() => {
           props.setDevice(props.device);
           return navigation.navigate('Options');
