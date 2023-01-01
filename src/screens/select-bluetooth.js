@@ -54,6 +54,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
       const manager = bleManager || new BleManager();
       if (bleManager === null) {
         setBleManager(manager);
+        setBleState(await manager.state());
       }
 
       const subscription = manager.onStateChange(state => {
@@ -61,8 +62,8 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
         const isPoweredOn = state === 'PoweredOn';
         setBlePoweredOn(isPoweredOn);
         if (isPoweredOn) {
-          scanDevices();
           subscription.remove();
+          scanDevices();
         }
       }, true);
 
@@ -79,6 +80,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
       if (error) {
         Alert.alert('error', error.message);
         // Handle error (scanning will be stopped automatically)
+        scanDevices();
         return;
       }
 
