@@ -25,10 +25,34 @@ const mainStyle = {
         paddingTop: 15,
         fontSize: 18,
         fontWeight: '400',
-    }, 
+    },
     selectDevice: {
         borderBottomWidth: 1,
         borderBottomColor: '#B8B8B8',
+        marginBottom: 5,
+    },
+    selectDeviceButton: {
+        height:70,
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingLeft: 10,
+        paddingRight: 10,
+    },
+    selectDeviceNameWrapper: {
+        flex: 1,
+        marginBottom: 10,
+    },
+    selectDeviceName: {
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    selectDeviceIdWrapper: {
+        flex: 1,
+
+    },
+    selectDeviceId: {
+        fontSize: 12,
+        color: "gray",
     }
 };
 

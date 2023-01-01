@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import type {Node} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -19,7 +19,7 @@ import {useColorScheme} from 'react-native';
 const Stack = createNativeStackNavigator();
 
 const App: () => Node = () => {
-  let device: Device;
+  const [device, setDevice] = useState(null);
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
@@ -35,7 +35,7 @@ const App: () => Node = () => {
           name="SelectBluetooth"
           options={{title: 'Select a car'}}
         >
-          {props => <SelectBluetooth {...props} device={device} />}
+          {props => <SelectBluetooth {...props} device={device} setDevice={setDevice} />}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

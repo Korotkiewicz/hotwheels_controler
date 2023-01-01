@@ -41,13 +41,13 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
   const [devices, setDevices] = useState([]);
   const [bleManager: BleManager, setBleManager] = useState(null);
 
-  useEffect(() => {
-    return () => {
-      if (bleManager !== null) {
-        bleManager.destroy();
-      }
-    };
-  }, [bleManager]);
+  // useEffect(() => {
+  //   return () => {
+  //     if (bleManager !== null) {
+  //       bleManager.destroy();
+  //     }
+  //   };
+  // }, [bleManager]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -55,6 +55,15 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
       if (bleManager === null) {
         setBleManager(manager);
         //setBleState(await manager.state());
+      } else if(props.device && props.device.isConnected()) {
+        props.device.cancelConnection()
+          .then((device) => {
+            Alert.alert('Disconnected', device.id);
+          })
+          .catch(error => {
+            Alert.alert('Error durring disconnection', error.message + ' Reason: ' + error.reason);
+          });
+
       }
 
       const subscription = manager.onStateChange(state => {
@@ -97,18 +106,18 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
     device
       .connect()
       .then(device => {
-        Alert.alert('connected', 'success');
         return device.discoverAllServicesAndCharacteristics();
       })
       .then(device => {
         props.setDevice(device);
-        Alert.prompt(
+        Alert.alert(
           'Success',
           'Correctly connected to ' + (device.localName || device.name),
         );
 
         device
           .characteristicsForService(SERVICE_UUID)
+          // .characteristics()
           .then((characteristics: Characteristic) => {
              characteristics.forEach((characteristic) => {
                    Alert.alert('characteristic', characteristic.uuid);
@@ -122,7 +131,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
       })
       .then((services: Service[]) => {
         services.forEach((service: Service) =>
-          Alert.alert('Service', service.toString()),
+          Alert.alert('Service', service.uuid),
         );
         return;
       })
