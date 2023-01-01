@@ -39,12 +39,15 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
   const [bleState, setBleState] = useState('unknown');
   const [blePoweredOn, setBlePoweredOn] = useState(false);
   const [devices, setDevices] = useState([]);
+  const [connecting, setConnecting] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
       if (props.bleManager === null) {
         return;
       }
+      
+      setConnecting(false);
 
       if(props.device && props.device.isConnected()) {
         props.bleManager.cancelDeviceConnection(props.device.uuid)
@@ -88,12 +91,15 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
   }, [props.bleManager]);
 
   const selectDevice = (device: Device) => {
+    setConnecting(true);
+    
     device
       .connect()
       .then(device => {
         return device.discoverAllServicesAndCharacteristics();
       })
       .then(device => {
+        setConnecting(false);
         props.setDevice(device);
         Alert.alert(
           'Correctly connected to',
@@ -122,6 +128,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
         return;
       })
       .catch(error => {
+        setConnecting(false);
         Alert.alert('Error durring connection', error.message + ' Reason: ' + error.reason);
       });
   };
@@ -144,7 +151,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
           </Section>
           <Section title="Devices:">
             {blePoweredOn ? (
-              <DevicesList devices={devices} setDevice={selectDevice} />
+              <DevicesList devices={devices} setDevice={selectDevice} disabled={connecting}/>
             ) : (
               <View style={styles.device}>
                 <Text style={styles.disabledText}>
