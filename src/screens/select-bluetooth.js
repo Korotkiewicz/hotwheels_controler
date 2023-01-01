@@ -127,7 +127,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
         return;
       })
       .catch(error => {
-        Alert.alert('Error durring connection', error. message);
+        Alert.alert('Error durring connection', error.message + ' Reason: ' + error.reason);
       });
   };
 
