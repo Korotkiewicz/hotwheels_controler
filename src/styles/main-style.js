@@ -1,3 +1,5 @@
+import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
+
 const mainStyle = {
     sectionContainer: {
         flex: 1,
@@ -25,7 +27,19 @@ const mainStyle = {
         width: '100%',
     },
     optionsButton: {
-        alignSelf: 'stretch',
+        backgroundColor: '#007bff',
+        paddingTop: 20,
+        paddingBottom: 20,
+        paddingLeft: 20,
+        paddingRight: 20,
+        borderRadius: 10,
+        marginTop: 10,
+    },
+    optionsButtonTextWrapper: {
+      alignItems: 'center'
+    },
+    optionsButtonText: {
+        color: 'white',
     },
     device: {
         flex: 1,
@@ -50,6 +64,7 @@ const mainStyle = {
         marginBottom: 10,
     },
     selectDeviceName: {
+        color: Colors.lighter,
         fontSize: 16,
         fontWeight: '600',
     },

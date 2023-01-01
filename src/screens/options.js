@@ -13,7 +13,7 @@ import {
   Button,
   SafeAreaView,
   ScrollView,
-  StatusBar, StyleSheet,
+  StatusBar, StyleSheet, Text, TouchableOpacity,
   useColorScheme,
   View,
 } from 'react-native';
@@ -50,17 +50,23 @@ const Options: (screenProps) => Node = (props: PropsWithDevice) => {
           </Section>
           <Section title="Options:">
             <View styles={styles.optionsButtonContainer}>
-              <Button
-                styles={styles.optionsButton}
-                title={!props.device ? 'Connect to hot wheels' : 'Disconnect from hot wheels'}
+              <TouchableOpacity
+                style={styles.optionsButton}
                 onPress={() => navigation.navigate('SelectBluetooth')}
-              />
-              <Button
-                styles={styles.optionsButton}
-                title="Drive a car"
+              >
+                <View style={styles.optionsButtonTextWrapper}>
+                  <Text style={styles.optionsButtonText}>{!props.device ? 'Connect to hot wheels' : 'Disconnect from hot wheels'}</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.optionsButton}
                 disabled={!props.device}
-                onPress={() => Alert.alert('Simple Button pressed')}
-              />
+                onPress={() => navigation.navigate('Drive')}
+              >
+                <View style={styles.optionsButtonTextWrapper}>
+                  <Text style={styles.optionsButtonText}>Drive a car</Text>
+                </View>
+              </TouchableOpacity>
             </View>
           </Section>
         </View>

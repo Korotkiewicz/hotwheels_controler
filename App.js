@@ -18,6 +18,7 @@ import SelectBluetooth from './src/screens/select-bluetooth';
 import Options from './src/screens/options';
 import {BleManager, Device} from 'react-native-ble-plx';
 import {useColorScheme} from 'react-native';
+import Drive from './src/screens/drive';
 
 
 const Stack = createNativeStackNavigator();
@@ -63,6 +64,12 @@ const App: () => Node = () => {
           options={{title: 'Select a car'}}
         >
           {props => <SelectBluetooth {...props} device={device} bleManager={bleManager} setDevice={selectDevice}/>}
+        </Stack.Screen>
+        <Stack.Screen
+          name="Drive"
+          options={{title: 'Drive'}}
+        >
+          {props => <Drive {...props} device={device} bleManager={bleManager} setDevice={() => {}}/>}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
