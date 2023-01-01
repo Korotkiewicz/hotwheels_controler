@@ -35,6 +35,9 @@ const mainStyle = {
         borderRadius: 10,
         marginTop: 10,
     },
+    disabledButton: {
+        opacity: 0.5,
+    },
     optionsButtonTextWrapper: {
       alignItems: 'center'
     },
