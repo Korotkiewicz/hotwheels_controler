@@ -111,7 +111,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
           .characteristicsForService(SERVICE_UUID)
           .then((characteristics: Characteristic) => {
              characteristics.forEach((characteristic) => {
-                 Alert.alert('characteristic', characteristic.toString());
+                   Alert.alert('characteristic', characteristic.uuid);
               });
           })
           .catch(error => {
