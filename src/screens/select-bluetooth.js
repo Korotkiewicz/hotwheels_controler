@@ -97,6 +97,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
     device
       .connect()
       .then(device => {
+        Alert.alert('connected', 'success');
         return device.discoverAllServicesAndCharacteristics();
       })
       .then(device => {
@@ -109,22 +110,24 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
         device
           .characteristicsForService(SERVICE_UUID)
           .then((characteristics: Characteristic) => {
-            Alert.alert('Characteristics', characteristics);
+             characteristics.forEach((characteristic) => {
+                 Alert.alert('characteristic', characteristic.toString());
+              });
           })
           .catch(error => {
-            Alert.alert('Error durring connection', error);
+            Alert.alert('Error durring fetching characteristics', error.message);
           });
 
         return device.services();
       })
       .then((services: Service[]) => {
         services.forEach((service: Service) =>
-          Alert.prompt('Service', service.toString()),
+          Alert.alert('Service', service.toString()),
         );
         return;
       })
       .catch(error => {
-        Alert.prompt('Error durring connection', error);
+        Alert.alert('Error durring connection', error. message);
       });
   };
 
