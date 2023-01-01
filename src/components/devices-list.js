@@ -18,8 +18,8 @@ import mainStyle from '../styles/main-style';
 import {Device} from 'react-native-ble-plx';
 import SelectDevice from '../components/select-device';
 
-const DevicesList: () => Node = ({devices, setDevice}) => {
-  const devicesList = devices.map((device: Device) => <SelectDevice key={device.id} device={device} setDevice={setDevice}/>);
+const DevicesList: () => Node = ({devices, setDevice, disabled}) => {
+  const devicesList = devices.map((device: Device) => <SelectDevice key={device.id} device={device} setDevice={setDevice} disabled={disabled}/>);
 
   return (
     <View style={styles.device}>
