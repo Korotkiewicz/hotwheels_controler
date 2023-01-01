@@ -32,6 +32,7 @@ const App: () => Node = () => {
   const selectDevice = (device: Device) => {
     if (device && device.isConnected()) {
       setDevice(device);
+      navigation.navigate('Drive');
     } else {
       setDevice(null);
     }
