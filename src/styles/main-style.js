@@ -20,6 +20,13 @@ const mainStyle = {
     disabledText: {
         color: "gray",
     },
+    optionsButtonContainer: {
+        alignItems: 'center',
+        width: '100%',
+    },
+    optionsButton: {
+        alignSelf: 'stretch',
+    },
     device: {
         flex: 1,
         paddingTop: 15,
