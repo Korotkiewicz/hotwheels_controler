@@ -23,13 +23,13 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import mainStyle from '../styles/main-style';
 import Section from '../components/section';
 import DevicesList from '../components/devices-list';
-import type PropsWithDevice from '../props-with-device';
-import {BleManager, Characteristic} from 'react-native-ble-plx';
+import {Characteristic} from 'react-native-ble-plx';
 import {useFocusEffect} from '@react-navigation/native';
+import type PropsWithDeviceAndManager from '../props-with-device-and-manager';
 
 const SERVICE_UUID = '5dfa6919-ce04-4e7c-8ddd-3d7a4060a2e0';
 
-const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
+const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -39,23 +39,10 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
   const [bleState, setBleState] = useState('unknown');
   const [blePoweredOn, setBlePoweredOn] = useState(false);
   const [devices, setDevices] = useState([]);
-  const [bleManager: BleManager, setBleManager] = useState(null);
-
-  // useEffect(() => {
-  //   return () => {
-  //     if (bleManager !== null) {
-  //       bleManager.destroy();
-  //     }
-  //   };
-  // }, [bleManager]);
 
   useFocusEffect(
     React.useCallback(() => {
-      const manager = bleManager || new BleManager();
-      if (bleManager === null) {
-        setBleManager(manager);
-        //setBleState(await manager.state());
-      } else if(props.device && props.device.isConnected()) {
+      if(props.device && props.device.isConnected()) {
         props.device.cancelConnection()
           .then((device) => {
             Alert.alert('Disconnected', device.id);
@@ -66,7 +53,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
         props.setDevice(null);
       }
 
-      const subscription = manager.onStateChange(state => {
+      const subscription = props.bleManager.onStateChange(state => {
         setBleState(state);
         const isPoweredOn = state === 'PoweredOn';
         setBlePoweredOn(isPoweredOn);
@@ -78,14 +65,14 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
 
       return () => {
         subscription.remove();
-        manager.stopDeviceScan();
+        props.bleManager.stopDeviceScan();
       };
-    }, [bleManager, scanDevices]),
+    }, [props.bleManager, scanDevices]),
   );
 
   const scanDevices = React.useCallback(() => {
     setDevices([]);
-    bleManager.startDeviceScan(null, {allowDuplicates: false}, (error, newDevice) => {
+    props.bleManager.startDeviceScan(null, {allowDuplicates: false}, (error, newDevice) => {
       setBleState('Scanning');
       if (error) {
         Alert.alert('error', error.message);
@@ -100,7 +87,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
         return [newDevice, ...oldDevices]
       });
     });
-  }, [bleManager]);
+  }, [props.bleManager]);
 
   const selectDevice = (device: Device) => {
     device
@@ -159,7 +146,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDevice) => {
           </Section>
           <Section title="Devices:">
             {blePoweredOn ? (
-              <DevicesList devices={devices} selectDevice={selectDevice} />
+              <DevicesList devices={devices} setDevice={selectDevice} />
             ) : (
               <View style={styles.device}>
                 <Text style={styles.disabledText}>

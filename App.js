@@ -6,13 +6,13 @@
  * @flow strict-local
  */
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import type {Node} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SelectBluetooth from './src/screens/select-bluetooth';
 import Options from './src/screens/options';
-import {Device} from 'react-native-ble-plx';
+import {BleManager, Device} from 'react-native-ble-plx';
 import {useColorScheme} from 'react-native';
 
 
@@ -20,15 +20,30 @@ const Stack = createNativeStackNavigator();
 
 const App: () => Node = () => {
   const [device, setDevice] = useState(null);
+  const [bleManager: BleManager, setBleManager] = useState(null);
   const isDarkMode = useColorScheme() === 'dark';
 
-  const selectDevice = (newDevice: Device) => {
-    if (newDevice && newDevice.isConnected()) {
-      setDevice(newDevice);
+
+  const selectDevice = (device: Device) => {
+    if (device && device.isConnected()) {
+      setDevice(device);
     } else {
       setDevice(null);
     }
   };
+
+  useEffect(() => {
+    const manager = bleManager || new BleManager();
+    if (manager === null) {
+      setBleManager(manager);
+    }
+
+    // return () => {
+    //   if (manager !== null) {
+    //     manager.destroy();
+    //   }
+    // };
+  }, [bleManager]);
 
   return (
     <NavigationContainer>
@@ -37,13 +52,13 @@ const App: () => Node = () => {
           name="Options"
           options={{title: 'Hot Wheels RC'}}
         >
-          {props => <Options {...props} device={device} />}
+          {props => <Options {...props} device={device}/>}
         </Stack.Screen>
         <Stack.Screen
           name="SelectBluetooth"
           options={{title: 'Select a car'}}
         >
-          {props => <SelectBluetooth {...props} device={device} setDevice={selectDevice} />}
+          {props => <SelectBluetooth {...props} device={device} bleManager={bleManager} setDevice={selectDevice}/>}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
