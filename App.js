@@ -27,7 +27,7 @@ const App: () => Node = () => {
   const [device, setDevice] = useState(null);
   const [bleManager: BleManager, setBleManager] = useState(null);
   const isDarkMode = useColorScheme() === 'dark';
-
+  const navigation = useNavigation();
 
   const selectDevice = (device: Device) => {
     if (device && device.isConnected()) {
