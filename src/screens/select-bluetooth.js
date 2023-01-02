@@ -101,7 +101,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
 
     device
       .connect({
-        timeout: 5,
+        // timeout: 5,
       })
       .then(device => {
         device.readRSSI();
