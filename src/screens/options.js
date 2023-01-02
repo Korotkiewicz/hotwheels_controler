@@ -9,8 +9,6 @@
 import React from 'react';
 import type {Node} from 'react';
 import {
-  Alert,
-  Button,
   SafeAreaView,
   ScrollView,
   StatusBar, StyleSheet, Text, TouchableOpacity,

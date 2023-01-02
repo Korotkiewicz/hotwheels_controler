@@ -19,7 +19,6 @@ import Options from './src/screens/options';
 import {BleManager, Device} from 'react-native-ble-plx';
 import {useColorScheme} from 'react-native';
 import Drive from './src/screens/drive';
-import {useNavigation} from '@react-navigation/native';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,9 +27,9 @@ const App: () => Node = () => {
   const [bleManager: BleManager, setBleManager] = useState(null);
   const isDarkMode = useColorScheme() === 'dark';
 
-  const selectDevice = (device: Device) => {
-    if (device && device.isConnected()) {
-      setDevice(device);
+  const selectDevice = (newDevice: Device) => {
+    if (newDevice && newDevice.isConnected()) {
+      setDevice(newDevice);
     } else {
       setDevice(null);
     }
@@ -40,6 +39,11 @@ const App: () => Node = () => {
     const manager = bleManager || new BleManager();
     if (bleManager === null) {
       setBleManager(manager);
+      manager.connectedDevices().then(devices => {
+        devices.forEach(oldDevice => {
+          manager.cancelDeviceConnection(oldDevice.uuid);
+        });
+      });
     }
 
     // return () => {
