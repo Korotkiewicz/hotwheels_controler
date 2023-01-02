@@ -58,12 +58,20 @@ const mainStyle = {
   selectDeviceContainer: {
     flex: 1,
     flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   selectDeviceInfoWrapper: {
     flex: 9,
   },
   selectDeviceSignalWrapper: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 30,
+    paddingLeft: 10,
   },
   selectDeviceButton: {
     height: 70,
@@ -90,7 +98,12 @@ const mainStyle = {
   },
   selectDeviceSignal: {
     fontSize: 16,
-  }
+    color: Colors.primary,
+  },
+  selectDeviceSignalDB: {
+    fontSize: 10,
+    color: 'gray',
+  },
 };
 
 export default mainStyle;

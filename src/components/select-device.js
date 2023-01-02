@@ -19,13 +19,13 @@ const SelectDevice = (props: PropsWithDevice): Node => {
     props.device.localName ||
     props.device.id ||
     'Unknown';
-  const [rssi, setRssi] = useState(props.device.rssi);
-
-  useEffect(() => {
-    props.device.readRSSI().then(device => {
-      setRssi(device.rssi);
-    });
-  }, [props]);
+  // const [rssi, setRssi] = useState(props.device.rssi);
+  //
+  // useEffect(() => {
+  //   props.device.readRSSI().then(device => {
+  //     setRssi(device.rssi);
+  //   });
+  // }, [props]);
 
   return (
     <View style={styles.selectDevice}>
@@ -46,7 +46,8 @@ const SelectDevice = (props: PropsWithDevice): Node => {
             </View>
           </View>
           <View style={styles.selectDeviceSignalWrapper}>
-            <Text style={styles.selectDeviceSignal}>{props.device.rssi}</Text>
+            <Text style={[styles.selectDeviceSignal, props.device.rssi < -70 ? {color: 'red'} : props.device.rssi < -60 ? {color: '#FF8C00'} : props.device.rssi < -50 ? {color: '#00008B'} : {color: '#006400'}]}>{props.device.rssi}</Text>
+            <Text style={styles.selectDeviceSignalDB}> dB</Text>
           </View>
         </View>
       </TouchableOpacity>
