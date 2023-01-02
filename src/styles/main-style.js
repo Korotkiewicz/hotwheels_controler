@@ -67,7 +67,7 @@ const mainStyle = {
     marginBottom: 10,
   },
   selectDeviceName: {
-    color: Colors.lighter,
+    color: Colors.primary,
     fontSize: 16,
     fontWeight: '600',
   },

@@ -27,10 +27,11 @@ const App: () => Node = () => {
   const [device, setDevice] = useState(null);
   const [bleManager: BleManager, setBleManager] = useState(null);
   const isDarkMode = useColorScheme() === 'dark';
-  const navigation = useNavigation();
 
   const selectDevice = (device: Device) => {
     if (device && device.isConnected()) {
+      const navigation = useNavigation();
+
       setDevice(device);
       navigation.navigate('Drive');
     } else {
