@@ -19,15 +19,24 @@ import {
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Section from '../components/section';
 import {useNavigation} from '@react-navigation/native';
-import type PropsWithDevice from '../props-with-device';
 import mainStyle from '../styles/main-style';
+import type PropsWithDeviceAndManager from '../props-with-device-and-manager';
 
-const Options: (screenProps) => Node = (props: PropsWithDevice) => {
+const Options: (screenProps) => Node = (props: PropsWithDeviceAndManager) => {
   const isDarkMode = useColorScheme() === 'dark';
   const navigation = useNavigation();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  };
+
+  const selectBluetooth = () => {
+    if(props.device && props.device.isConnected()) {
+      props.bleManager.cancelDeviceConnection(props.device.uuid);
+      props.setDevice(null);
+    }
+
+    navigation.navigate('SelectBluetooth');
   };
 
   return (
@@ -50,7 +59,7 @@ const Options: (screenProps) => Node = (props: PropsWithDevice) => {
             <View styles={styles.optionsButtonContainer}>
               <TouchableOpacity
                 style={styles.optionsButton}
-                onPress={() => navigation.navigate('SelectBluetooth')}
+                onPress={() => selectBluetooth()}
               >
                 <View style={styles.optionsButtonTextWrapper}>
                   <Text style={styles.optionsButtonText}>{!props.device ? 'Connect to hot wheels' : 'Disconnect from hot wheels'}</Text>

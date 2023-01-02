@@ -50,11 +50,6 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
 
       setConnecting(false);
 
-      if(props.device && props.device.isConnected()) {
-        // props.bleManager.cancelDeviceConnection(props.device.uuid);
-        // props.setDevice(null);
-      }
-
       const subscription = props.bleManager.onStateChange(state => {
         const isPoweredOn = state === 'PoweredOn';
         setBleState(state);
