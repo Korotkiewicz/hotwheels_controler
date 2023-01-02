@@ -100,7 +100,9 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
     setBleState('Connecting');
 
     device
-      .connect()
+      .connect({
+        timeout: 5,
+      })
       .then(device => {
         setConnecting(false);
         return device.discoverAllServicesAndCharacteristics();
@@ -134,9 +136,9 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
         return;
       })
       .catch(error => {
+        Alert.alert('Error durring connection', error.message + ' Reason: ' + error.reason);
         setConnecting(false);
         scanDevices();
-        Alert.alert('Error durring connection', error.message + ' Reason: ' + error.reason);
       });
   };
 
