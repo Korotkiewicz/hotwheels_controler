@@ -72,6 +72,11 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
             }
           });
         });
+      setTimeout(() => {
+        if (writeCharacteristic === null) {
+          Alert.alert('Wrong device', 'Connected device not allow to drive');
+        }
+      }, 5000);
     }, [props.device]),
   );
 
