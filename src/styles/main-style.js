@@ -104,6 +104,20 @@ const mainStyle = {
     fontSize: 10,
     color: 'gray',
   },
+  lightButtonTextWrapper: {
+    borderColor: 'red',
+    borderWidth: 1,
+    backgroundColor: 'gray',
+    width: 80,
+    height: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 50,
+  },
+  lightButtonText: {
+    color: Colors.white,
+    fontSize: 20,
+  }
 };
 
 export default mainStyle;

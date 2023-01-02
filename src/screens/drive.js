@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import type {Node} from 'react';
 import {
   Alert,
@@ -22,24 +22,52 @@ import {
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import mainStyle from '../styles/main-style';
-import Section from '../components/section';
-import DevicesList from '../components/devices-list';
 import {Characteristic} from 'react-native-ble-plx';
 import {useFocusEffect} from '@react-navigation/native';
 import type PropsWithDeviceAndManager from '../props-with-device-and-manager';
-
-const SERVICE_UUID = '5dfa6919-ce04-4e7c-8ddd-3d7a4060a2e0';
+import {
+  SERVICE_UUID,
+  TURN_LIGHTS_OFF_COMMAND,
+  TURN_LIGHTS_ON_COMMAND,
+  WRITE_CHARACTERISTIC_UUID,
+} from '../device-config';
 
 const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   const isDarkMode = useColorScheme() === 'dark';
+  const [writeCharacteristic: Characteristic, setWriteCharacteristic] =
+    useState(null);
+  const [lights, setLights] = useState(false);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
   const toggleLight = () => {
-    Alert.alert('Lights ');
+    Alert.alert('lights ' + (lights ? 'on' : 'off'));
+    writeCharacteristic?.writeWithResponse(
+      lights ? TURN_LIGHTS_OFF_COMMAND : TURN_LIGHTS_ON_COMMAND,
+    );
+    setLights(!lights);
   };
+
+  const isWorking = () => props.device.isConnected() && writeCharacteristic;
+
+  useFocusEffect(
+    useCallback(() => {
+      props.device
+        .characteristicsForService(SERVICE_UUID)
+        .then((characteristics: Characteristic[]) => {
+          characteristics.forEach((characteristic: Characteristic) => {
+            if (
+              characteristic.uuid === WRITE_CHARACTERISTIC_UUID &&
+              characteristic.isWritableWithResponse
+            ) {
+              setWriteCharacteristic(characteristic);
+            }
+          });
+        });
+    }, [props.device]),
+  );
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -56,7 +84,11 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
           }}>
           <View styles={styles.controlButtonsContainer}>
             <TouchableOpacity
-              style={styles.lightButton}
+              style={[
+                styles.lightButton,
+                !isWorking() ? styles.disabledButton : {},
+              ]}
+              disabled={!isWorking()}
               onPress={() => toggleLight()}>
               <View style={styles.lightButtonTextWrapper}>
                 <Text style={styles.lightButtonText}>Lights</Text>
