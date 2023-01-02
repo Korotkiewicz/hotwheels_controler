@@ -54,23 +54,28 @@ const App: () => Node = () => {
   return (
     <NavigationContainer theme={isDarkMode ? DarkTheme : DefaultTheme}>
       <Stack.Navigator>
-        <Stack.Screen
-          name="Options"
-          options={{title: 'Hot Wheels RC'}}
-        >
-          {props => <Options {...props} device={device}/>}
+        <Stack.Screen name="Options" options={{title: 'Hot Wheels RC'}}>
+          {props => <Options {...props} device={device} />}
         </Stack.Screen>
-        <Stack.Screen
-          name="SelectBluetooth"
-          options={{title: 'Select a car'}}
-        >
-          {props => <SelectBluetooth {...props} device={device} bleManager={bleManager} setDevice={selectDevice}/>}
+        <Stack.Screen name="SelectBluetooth" options={{title: 'Select a car'}}>
+          {props => (
+            <SelectBluetooth
+              {...props}
+              device={device}
+              bleManager={bleManager}
+              setDevice={selectDevice}
+            />
+          )}
         </Stack.Screen>
-        <Stack.Screen
-          name="Drive"
-          options={{title: 'Drive'}}
-        >
-          {props => <Drive {...props} device={device} bleManager={bleManager} setDevice={() => {}}/>}
+        <Stack.Screen name="Drive" options={{title: 'Drive'}}>
+          {props => (
+            <Drive
+              {...props}
+              device={device}
+              bleManager={bleManager}
+              setDevice={() => {}}
+            />
+          )}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

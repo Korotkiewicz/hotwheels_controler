@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import type {Node} from 'react';
 import {
   Alert,
@@ -46,11 +46,11 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
       if (props.bleManager === null) {
         return;
       }
-      
+
       setConnecting(false);
 
       if(props.device && props.device.isConnected()) {
-        props.bleManager.cancelDeviceConnection(props.device.uuid)
+        props.bleManager.cancelDeviceConnection(props.device.uuid);
         props.setDevice(null);
       }
 
@@ -68,7 +68,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
         subscription.remove();
         props.bleManager.stopDeviceScan();
       };
-    }, [props.bleManager, scanDevices]),
+    }, [props, scanDevices]),
   );
 
   const scanDevices = React.useCallback(() => {
@@ -83,7 +83,9 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
       }
 
       setDevices(oldDevices => {
-        oldDevices = oldDevices.filter(oldDevice => oldDevice.id !== newDevice.id);
+          oldDevices = oldDevices.filter(
+            oldDevice => oldDevice.id !== newDevice.id,
+          );
 
         return [newDevice, ...oldDevices]
       });
@@ -92,7 +94,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
 
   const selectDevice = (device: Device) => {
     setConnecting(true);
-    
+
     device
       .connect()
       .then(device => {

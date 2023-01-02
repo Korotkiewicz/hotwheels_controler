@@ -36,11 +36,10 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
-  
+
   const toggleLight = () => {
     Alert.alert('Lights ');
   };
-
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -56,15 +55,14 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
           <View styles={styles.controlButtonsContainer}>
-              <TouchableOpacity
-                style={styles.lightButton}
-                onPress={() => toggleLight()}
-              >
-                <View style={styles.lightButtonTextWrapper}>
-                  <Text style={styles.lightButtonText}>Lights</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={styles.lightButton}
+              onPress={() => toggleLight()}>
+              <View style={styles.lightButtonTextWrapper}>
+                <Text style={styles.lightButtonText}>Lights</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
