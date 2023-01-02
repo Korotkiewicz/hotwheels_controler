@@ -66,7 +66,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
 
       return () => {
         subscription.remove();
-        props.bleManager.stopDeviceScan();
+        stopScanDevices();
       };
     }, [props, scanDevices]),
   );
@@ -92,18 +92,20 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
     });
   }, [props.bleManager]);
 
+  const stopScanDevices = () => props.bleManager.stopDeviceScan();
+
   const selectDevice = (device: Device) => {
+    stopScanDevices();
     setConnecting(true);
-    props.bleManager.stopDeviceScan();
     setBleState('Connecting');
 
     device
       .connect()
       .then(device => {
+        setConnecting(false);
         return device.discoverAllServicesAndCharacteristics();
       })
       .then(device => {
-        setConnecting(false);
         props.setDevice(device);
         Alert.alert(
           'Correctly connected to',
