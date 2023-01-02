@@ -23,7 +23,7 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import mainStyle from '../styles/main-style';
 import Section from '../components/section';
 import DevicesList from '../components/devices-list';
-import {Characteristic} from 'react-native-ble-plx';
+import {Characteristic, Service} from 'react-native-ble-plx';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import type PropsWithDeviceAndManager from '../props-with-device-and-manager';
 import {SERVICE_UUID} from '../device-config';
@@ -80,6 +80,16 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
           return;
         }
 
+        // newDevice.services().then((services: Service[]) => {
+        //   services.forEach((service: Service) => {
+        //     if (service.uuid === SERVICE_UUID) {
+        //
+        //     }
+        //   });
+        //
+        //   return;
+        // });
+
         setDevices(oldDevices => {
           oldDevices = oldDevices.filter(
             oldDevice => oldDevice.id !== newDevice.id,
@@ -114,31 +124,9 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
           device.localName || device.name || device.title || device.id,
         );
 
-        return device.services();
-      })
-      .then((services: Service[]) => {
-        services.forEach((service: Service) => {
-          Alert.alert('Service', service.uuid);
-
-          device
-            // .characteristicsForService(SERVICE_UUID)
-            .characteristicsForService(service.uuid)
-            // .characteristics()
-            .then((characteristics: Characteristic) => {
-              characteristics.forEach(characteristic => {
-                Alert.alert('characteristic', characteristic.uuid);
-              });
-            })
-            .catch(error => {
-              Alert.alert(
-                'Error durring fetching characteristics',
-                error.message,
-              );
-            });
-        });
-
         navigation.navigate('Options');
-        return;
+
+        return device.services();
       })
       .catch(error => {
         Alert.alert(

@@ -9,6 +9,7 @@
 import React from 'react';
 import type {Node} from 'react';
 import {
+  Alert,
   SafeAreaView,
   ScrollView,
   StatusBar, StyleSheet, Text, TouchableOpacity,
@@ -32,7 +33,10 @@ const Options: (screenProps) => Node = (props: PropsWithDeviceAndManager) => {
 
   const selectBluetooth = () => {
     if(props.device && props.device.isConnected()) {
-      props.bleManager.cancelDeviceConnection(props.device.uuid);
+      props.bleManager
+        .cancelDeviceConnection(props.device.id)
+        .then(device => Alert.alert('Disconnected'))
+        .catch(error => Alert.alert('Disconnecting error', error.message + ' Reason: ' + error.reason));
       props.setDevice(null);
     }
 

@@ -104,15 +104,25 @@ const mainStyle = {
     fontSize: 10,
     color: 'gray',
   },
-  lightButtonTextWrapper: {
-    borderColor: 'red',
-    borderWidth: 1,
+  controlButtonsContainer: {
+    backgroundColor: 'gray',
+    width: '100%',
+  },
+  lightButton: {
+    borderWidth: 5,
     backgroundColor: 'gray',
     width: 80,
     height: 80,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 50,
+  },
+  lightButtonOff: {
+    borderColor: 'red',
+    backgroundColor: 'gray',
+  },
+  lightButtonOn: {
+    borderColor: 'green',
   },
   lightButtonText: {
     color: Colors.white,

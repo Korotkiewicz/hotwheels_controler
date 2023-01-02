@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import type {Node} from 'react';
 import {
   Alert,
@@ -30,6 +30,7 @@ import {
   TURN_LIGHTS_ON_COMMAND,
   WRITE_CHARACTERISTIC_UUID,
 } from '../device-config';
+import {btoa} from 'react-native-quick-base64';
 
 const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -42,15 +43,16 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   };
 
   const toggleLight = () => {
-    writeCharacteristic?.writeWithResponse(
-      atob(lights ? TURN_LIGHTS_OFF_COMMAND : TURN_LIGHTS_ON_COMMAND)
-    )
-    .then(characteristic => {
-      Alert.alert('lights ' + (lights ? 'on' : 'off'))
-    })
-    .catch(error => {
-      Alert.alert('Error change lights', error.message);
-    });
+    writeCharacteristic
+      ?.writeWithResponse(
+        btoa(lights ? TURN_LIGHTS_OFF_COMMAND : TURN_LIGHTS_ON_COMMAND),
+      )
+      .then(characteristic => {
+        //lighs toggled correctly
+      })
+      .catch(error => {
+        Alert.alert('Error change lights', error.message);
+      });
     setLights(!lights);
   };
 
@@ -89,12 +91,16 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
           <View styles={styles.controlButtonsContainer}>
             <TouchableOpacity
               style={[
-                styles.lightButton,
+                styles.lightButtonTouchable,
                 !isWorking() ? styles.disabledButton : {},
               ]}
               disabled={!isWorking()}
               onPress={() => toggleLight()}>
-              <View style={styles.lightButtonTextWrapper}>
+              <View
+                style={[
+                  styles.lightButton,
+                  lights ? styles.lightButtonOn : styles.lightButtonOff,
+                ]}>
                 <Text style={styles.lightButtonText}>Lights</Text>
               </View>
             </TouchableOpacity>
