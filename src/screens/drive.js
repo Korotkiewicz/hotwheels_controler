@@ -19,7 +19,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import mainStyle from '../styles/main-style';
 import {Characteristic} from 'react-native-ble-plx';
@@ -43,10 +42,15 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   };
 
   const toggleLight = () => {
-    Alert.alert('lights ' + (lights ? 'on' : 'off'));
     writeCharacteristic?.writeWithResponse(
-      lights ? TURN_LIGHTS_OFF_COMMAND : TURN_LIGHTS_ON_COMMAND,
-    );
+      atob(lights ? TURN_LIGHTS_OFF_COMMAND : TURN_LIGHTS_ON_COMMAND)
+    )
+    .then(characteristic => {
+      Alert.alert('lights ' + (lights ? 'on' : 'off'))
+    })
+    .catch(error => {
+      Alert.alert('Error change lights', error.message);
+    });
     setLights(!lights);
   };
 
