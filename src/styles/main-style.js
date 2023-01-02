@@ -55,6 +55,16 @@ const mainStyle = {
     borderBottomColor: '#B8B8B8',
     marginBottom: 5,
   },
+  selectDeviceContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  selectDeviceInfoWrapper: {
+    flex: 9,
+  },
+  selectDeviceSignalWrapper: {
+    flex: 1,
+  },
   selectDeviceButton: {
     height: 70,
     paddingTop: 10,
@@ -78,6 +88,9 @@ const mainStyle = {
     fontSize: 12,
     color: 'gray',
   },
+  selectDeviceSignal: {
+    fontSize: 16,
+  }
 };
 
 export default mainStyle;
