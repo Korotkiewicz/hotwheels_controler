@@ -24,13 +24,14 @@ import mainStyle from '../styles/main-style';
 import Section from '../components/section';
 import DevicesList from '../components/devices-list';
 import {Characteristic} from 'react-native-ble-plx';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import type PropsWithDeviceAndManager from '../props-with-device-and-manager';
 
 const SERVICE_UUID = '5dfa6919-ce04-4e7c-8ddd-3d7a4060a2e0';
 
 const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
   const isDarkMode = useColorScheme() === 'dark';
+  const navigation = useNavigation();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -101,7 +102,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
 
     device
       .connect({
-        // timeout: 5,
+        timeout: 5000,
       })
       .then(device => {
         device.readRSSI();
@@ -134,6 +135,8 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
               Alert.alert('Error durring fetching characteristics', error.message);
             });
         });
+
+        navigation.navigate('Options');
         return;
       })
       .catch(error => {
