@@ -94,6 +94,8 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
 
   const selectDevice = (device: Device) => {
     setConnecting(true);
+    props.bleManager.stopDeviceScan();
+    setBleState('Connecting');
 
     device
       .connect()
@@ -131,6 +133,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
       })
       .catch(error => {
         setConnecting(false);
+        scanDevices();
         Alert.alert('Error durring connection', error.message + ' Reason: ' + error.reason);
       });
   };
