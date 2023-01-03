@@ -80,15 +80,14 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
           return;
         }
 
-        // newDevice.services().then((services: Service[]) => {
-        //   services.forEach((service: Service) => {
-        //     if (service.uuid === SERVICE_UUID) {
-        //
-        //     }
-        //   });
-        //
-        //   return;
-        // });
+        newDevice.services().then((services: Service[]) => {
+           services.forEach((service: Service) => {
+             if (service.uuid === SERVICE_UUID) {
+                 Alert.alert('Proper device', device.uuid');
+             }
+           });
+         })
+        .catch(error => Alert.alert('Detect services error', error.message));
 
         setDevices(oldDevices => {
           oldDevices = oldDevices.filter(
