@@ -101,7 +101,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
           Alert.alert('Wrong device', 'Connected device not allow to drive');
         }
       }, 5000);
-    }, [props.device]),
+    }, [props.device, writeCharacteristic]),
   );
 
   return (
@@ -114,10 +114,13 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
         <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <View styles={styles.controlButtonsContainer}>
+          style={[
+            styles.driveWrapper,
+            {
+              backgroundColor: isDarkMode ? Colors.black : Colors.white,
+            },
+          ]}>
+          <View style={styles.controlButtonsContainer}>
             <TouchableOpacity
               style={[
                 styles.lightButtonTouchable,
@@ -134,8 +137,8 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
               </View>
             </TouchableOpacity>
           </View>
-          <View styles={styles.steeringContainer}>
-            <View styles={styles.movingButtonWrapper}>
+          <View style={styles.steeringContainer}>
+            <View style={styles.movingButtonWrapper}>
               <TouchableOpacity
                 style={[
                   styles.turnTouchable,
@@ -148,7 +151,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                 </View>
               </TouchableOpacity>
             </View>
-            <View styles={styles.movingButtonWrapper}>
+            <View style={styles.movingButtonWrapper}>
               <TouchableOpacity
                 style={[
                   styles.turnTouchable,
@@ -161,7 +164,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                 </View>
               </TouchableOpacity>
             </View>
-            <View styles={styles.movingButtonWrapper}>
+            <View style={styles.movingButtonWrapper}>
               <TouchableOpacity
                 style={[
                   styles.throttleTouchable,
@@ -174,7 +177,8 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                 </View>
               </TouchableOpacity>
             </View>
-            <View styles={styles.movingButtonWrapper}>
+
+            <View style={styles.movingButtonWrapper}>
               <TouchableOpacity
                 style={[
                   styles.throttleTouchable,

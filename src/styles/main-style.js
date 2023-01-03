@@ -104,17 +104,19 @@ const mainStyle = {
     fontSize: 10,
     color: 'gray',
   },
+  driveWrapper: {
+    flexDirection: 'column',
+  },
   controlButtonsContainer: {
     flex: 1,
-    backgroundColor: 'gray',
+    flexDirection: 'row',
     width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   steeringContainer: {
     flex: 10,
     flexDirection: 'row',
-    backgroundColor: 'blue',
-    width: 500,
-    height: 500,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -159,15 +161,22 @@ const mainStyle = {
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
+    borderTopEndRadius: 20,
   },
   throttleButtonText: {
     color: Colors.white,
     fontSize: 15,
   },
   movingButtonWrapper: {
-    backgroundColor: 'green',
-    width: 100,
-    height: 100,
+    padding: 5,
+  },
+  turnTouchable: {
+    width: 80,
+    height: 80,
+  },
+  throttleTouchable: {
+    width: 80,
+    height: 80,
   },
 };
 
