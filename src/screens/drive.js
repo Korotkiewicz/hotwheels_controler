@@ -26,6 +26,8 @@ import {useFocusEffect} from '@react-navigation/native';
 import type PropsWithDeviceAndManager from '../props-with-device-and-manager';
 import {
   SERVICE_UUID,
+  THROTTLE_COMMAND,
+  TURN_COMMAND,
   TURN_LIGHTS_OFF_COMMAND,
   TURN_LIGHTS_ON_COMMAND,
   WRITE_CHARACTERISTIC_UUID,
@@ -54,6 +56,28 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
         Alert.alert('Error change lights', error.message);
       });
     setLights(!lights);
+  };
+
+  const turn = (number: number) => {
+    writeCharacteristic
+      ?.writeWithResponse(btoa(TURN_COMMAND + number + ';'))
+      .then(characteristic => {
+        //turn correctly
+      })
+      .catch(error => {
+        Alert.alert('Error during turrning', error.message);
+      });
+  };
+
+  const throttle = (number: number) => {
+    writeCharacteristic
+      ?.writeWithResponse(btoa(THROTTLE_COMMAND + number + ';'))
+      .then(characteristic => {
+        //throttle correctly
+      })
+      .catch(error => {
+        Alert.alert('Error during throttling', error.message);
+      });
   };
 
   const isWorking = () => props.device.isConnected() && writeCharacteristic;
@@ -109,6 +133,60 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                 <Text style={styles.lightButtonText}>Lights</Text>
               </View>
             </TouchableOpacity>
+          </View>
+          <View styles={styles.steeringContainer}>
+            <View styles={styles.movingButtonWrapper}>
+              <TouchableOpacity
+                style={[
+                  styles.turnTouchable,
+                  !isWorking() ? styles.disabledButton : {},
+                ]}
+                disabled={!isWorking()}
+                onPress={() => turn(-100)}>
+                <View style={styles.turnButton}>
+                  <Text style={styles.turnButtonText}>Left</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View styles={styles.movingButtonWrapper}>
+              <TouchableOpacity
+                style={[
+                  styles.turnTouchable,
+                  !isWorking() ? styles.disabledButton : {},
+                ]}
+                disabled={!isWorking()}
+                onPress={() => turn(100)}>
+                <View style={styles.turnButton}>
+                  <Text style={styles.turnButtonText}>Right</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View styles={styles.movingButtonWrapper}>
+              <TouchableOpacity
+                style={[
+                  styles.throttleTouchable,
+                  !isWorking() ? styles.disabledButton : {},
+                ]}
+                disabled={!isWorking()}
+                onPress={() => throttle(100)}>
+                <View style={styles.throttleButton}>
+                  <Text style={styles.throttleButtonText}>Forward</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View styles={styles.movingButtonWrapper}>
+              <TouchableOpacity
+                style={[
+                  styles.throttleTouchable,
+                  !isWorking() ? styles.disabledButton : {},
+                ]}
+                disabled={!isWorking()}
+                onPress={() => throttle(-100)}>
+                <View style={styles.throttleButton}>
+                  <Text style={styles.throttleButtonText}>Backward</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </ScrollView>

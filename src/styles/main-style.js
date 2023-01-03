@@ -105,8 +105,18 @@ const mainStyle = {
     color: 'gray',
   },
   controlButtonsContainer: {
+    flex: 1,
     backgroundColor: 'gray',
     width: '100%',
+  },
+  steeringContainer: {
+    flex: 10,
+    flexDirection: 'row',
+    backgroundColor: 'blue',
+    width: 500,
+    height: 500,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   lightButton: {
     borderWidth: 5,
@@ -127,7 +137,38 @@ const mainStyle = {
   lightButtonText: {
     color: Colors.white,
     fontSize: 20,
-  }
+  },
+  turnButton: {
+    borderWidth: 5,
+    backgroundColor: 'gray',
+    width: 80,
+    height: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  turnButtonText: {
+    color: Colors.white,
+    fontSize: 18,
+  },
+  throttleButton: {
+    borderWidth: 5,
+    backgroundColor: 'gray',
+    width: 80,
+    height: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  throttleButtonText: {
+    color: Colors.white,
+    fontSize: 15,
+  },
+  movingButtonWrapper: {
+    backgroundColor: 'green',
+    width: 100,
+    height: 100,
+  },
 };
 
 export default mainStyle;
