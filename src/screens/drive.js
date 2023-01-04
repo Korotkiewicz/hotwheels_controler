@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import type {Node} from 'react';
 import {
   Alert,
@@ -18,6 +18,7 @@ import {
   useColorScheme,
   TouchableOpacity,
   View,
+  useWindowDimensions
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import mainStyle from '../styles/main-style';
@@ -26,8 +27,6 @@ import {useFocusEffect} from '@react-navigation/native';
 import type PropsWithDeviceAndManager from '../props-with-device-and-manager';
 import {
   SERVICE_UUID,
-  THROTTLE_COMMAND,
-  TURN_COMMAND,
   TURN_LIGHTS_OFF_COMMAND,
   TURN_LIGHTS_ON_COMMAND,
   COMMAND_CHARACTERISTIC_UUID,
@@ -35,6 +34,8 @@ import {
   THROTTLE_CHARACTERISTIC_UUID,
 } from '../device-config';
 import {btoa} from 'react-native-quick-base64';
+import {getStatusBarHeight} from 'react-native-status-bar-height';
+import TouchPad from '../components/touch-pad';
 
 const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -45,6 +46,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   const [throttleCharacteristic: Characteristic, setThrottleCharacteristic] =
     useState(null);
   const [lights, setLights] = useState(false);
+  const statusBarHeight = getStatusBarHeight();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -86,7 +88,17 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
       });
   };
 
-  const isWorking = () => props.device.isConnected() && commandCharacteristic && turnCharacteristic && throttleCharacteristic;
+  const move = (x: number, y: number) => {
+    //todo
+  };
+
+  const dimensions = useWindowDimensions();
+
+  const isWorking = () =>
+    props.device.isConnected() &&
+    commandCharacteristic &&
+    turnCharacteristic &&
+    throttleCharacteristic;
 
   useFocusEffect(
     useCallback(() => {
@@ -114,16 +126,16 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <View
-          style={[
-            styles.driveWrapper,
-            {
-              backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            },
-          ]}>
+      <View
+        style={[
+          {
+            width: '100%',
+            height: dimensions.height - statusBarHeight,
+            marginTop: -statusBarHeight,
+          },
+          backgroundStyle,
+        ]}>
+        <View style={[styles.driveWrapper, {marginTop: statusBarHeight}]}>
           <View style={styles.controlButtonsContainer}>
             <TouchableOpacity
               style={[
@@ -141,7 +153,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
               </View>
             </TouchableOpacity>
           </View>
-          <View style={styles.steeringContainer}>
+          <View style={styles.steeringControlsContainer}>
             <View style={styles.movingButtonWrapper}>
               <TouchableOpacity
                 style={[
@@ -181,7 +193,6 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                 </View>
               </TouchableOpacity>
             </View>
-
             <View style={styles.movingButtonWrapper}>
               <TouchableOpacity
                 style={[
@@ -196,8 +207,11 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
               </TouchableOpacity>
             </View>
           </View>
+          <View style={styles.steeringContainer}>
+            <TouchPad onMove={move}></TouchPad>
+          </View>
         </View>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };

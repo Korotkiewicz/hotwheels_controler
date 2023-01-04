@@ -105,7 +105,9 @@ const mainStyle = {
     color: 'gray',
   },
   driveWrapper: {
+    flex: 1,
     flexDirection: 'column',
+    justifyContent: 'flex-start',
   },
   controlButtonsContainer: {
     flex: 1,
@@ -114,11 +116,34 @@ const mainStyle = {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  steeringContainer: {
-    flex: 10,
+  steeringControlsContainer: {
+    flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  steeringContainer: {
+    flex: 4,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  touchPad: {
+    position: 'relative',
+    width: '90%',
+    aspectRatio: 1,
+    borderRadius: 20,
+    borderWidth: 5,
+    borderColor: Colors.lighter,
+    backgroundColor: Colors.darker,
+    flexWrap: 'wrap',
+  },
+  touchPadCursor: {
+    backgroundColor: 'orange',
+  },
+  lightButtonTouchable: {
+    width: 80,
+    height: 80,
   },
   lightButton: {
     borderWidth: 5,
