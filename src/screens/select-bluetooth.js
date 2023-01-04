@@ -69,7 +69,7 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
   const scanDevices = React.useCallback(() => {
     setDevices([]);
     props.bleManager.startDeviceScan(
-      null,
+      [SERVICE_UUID],
       {allowDuplicates: false},
       (error, newDevice) => {
         setBleState('Scanning');

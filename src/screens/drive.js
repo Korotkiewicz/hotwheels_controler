@@ -30,13 +30,19 @@ import {
   TURN_COMMAND,
   TURN_LIGHTS_OFF_COMMAND,
   TURN_LIGHTS_ON_COMMAND,
-  WRITE_CHARACTERISTIC_UUID,
+  COMMAND_CHARACTERISTIC_UUID,
+  TURN_CHARACTERISTIC_UUID,
+  THROTTLE_CHARACTERISTIC_UUID,
 } from '../device-config';
 import {btoa} from 'react-native-quick-base64';
 
 const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   const isDarkMode = useColorScheme() === 'dark';
-  const [writeCharacteristic: Characteristic, setWriteCharacteristic] =
+  const [commandCharacteristic: Characteristic, setCommandCharacteristic] =
+    useState(null);
+  const [turnCharacteristic: Characteristic, setTurnCharacteristic] =
+    useState(null);
+  const [throttleCharacteristic: Characteristic, setThrottleCharacteristic] =
     useState(null);
   const [lights, setLights] = useState(false);
 
@@ -45,7 +51,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   };
 
   const toggleLight = () => {
-    writeCharacteristic
+    commandCharacteristic
       ?.writeWithResponse(
         btoa(lights ? TURN_LIGHTS_OFF_COMMAND : TURN_LIGHTS_ON_COMMAND),
       )
@@ -59,8 +65,8 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   };
 
   const turn = (number: number) => {
-    writeCharacteristic
-      ?.writeWithResponse(btoa(TURN_COMMAND + number + ';'))
+    turnCharacteristic
+      ?.writeWithResponse(btoa(number + ''))
       .then(characteristic => {
         //turn correctly
       })
@@ -70,8 +76,8 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   };
 
   const throttle = (number: number) => {
-    writeCharacteristic
-      ?.writeWithResponse(btoa(THROTTLE_COMMAND + number + ';'))
+    throttleCharacteristic
+      ?.writeWithResponse(btoa(number + ''))
       .then(characteristic => {
         //throttle correctly
       })
@@ -80,7 +86,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
       });
   };
 
-  const isWorking = () => props.device.isConnected() && writeCharacteristic;
+  const isWorking = () => props.device.isConnected() && commandCharacteristic && turnCharacteristic && throttleCharacteristic;
 
   useFocusEffect(
     useCallback(() => {
@@ -88,20 +94,19 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
         .characteristicsForService(SERVICE_UUID)
         .then((characteristics: Characteristic[]) => {
           characteristics.forEach((characteristic: Characteristic) => {
-            if (
-              characteristic.uuid === WRITE_CHARACTERISTIC_UUID &&
-              characteristic.isWritableWithResponse
-            ) {
-              setWriteCharacteristic(characteristic);
+            Alert.alert(characteristic.uuid);
+            if (characteristic.isWritableWithResponse) {
+              if (characteristic.uuid === COMMAND_CHARACTERISTIC_UUID) {
+                setCommandCharacteristic(characteristic);
+              } else if (characteristic.uuid === TURN_CHARACTERISTIC_UUID) {
+                setTurnCharacteristic(characteristic);
+              } else if (characteristic.uuid === THROTTLE_CHARACTERISTIC_UUID) {
+                setThrottleCharacteristic(characteristic);
+              }
             }
           });
         });
-      setTimeout(() => {
-        if (writeCharacteristic === null) {
-          Alert.alert('Wrong device', 'Connected device not allow to drive');
-        }
-      }, 5000);
-    }, [props.device, writeCharacteristic]),
+    }, [props.device]),
   );
 
   return (
