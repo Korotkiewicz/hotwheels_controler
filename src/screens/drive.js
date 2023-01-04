@@ -89,7 +89,8 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   };
 
   const move = (x: number, y: number) => {
-    //todo
+    turn(x);
+    // throttle(y);
   };
 
   const dimensions = useWindowDimensions();
