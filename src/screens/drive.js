@@ -94,7 +94,6 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
         .characteristicsForService(SERVICE_UUID)
         .then((characteristics: Characteristic[]) => {
           characteristics.forEach((characteristic: Characteristic) => {
-            Alert.alert(characteristic.uuid);
             if (characteristic.isWritableWithResponse) {
               if (characteristic.uuid === COMMAND_CHARACTERISTIC_UUID) {
                 setCommandCharacteristic(characteristic);
@@ -150,7 +149,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                   !isWorking() ? styles.disabledButton : {},
                 ]}
                 disabled={!isWorking()}
-                onPress={() => turn(-100)}>
+                onPress={() => turn(-500)}>
                 <View style={styles.turnButton}>
                   <Text style={styles.turnButtonText}>Left</Text>
                 </View>
