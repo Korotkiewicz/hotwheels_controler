@@ -12,6 +12,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		90FD3A7C2967752000B69B74 /* libRNReactNativeHapticFeedback.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 90FD3A7B296774D800B69B74 /* libRNReactNativeHapticFeedback.a */; };
 		BBBC7EDA0B0ABDC000E542FE /* libPods-hotwheels_controler-hotwheels_controlerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6899B3005BE9E9441B6D4FF8 /* libPods-hotwheels_controler-hotwheels_controlerTests.a */; };
 		BFFD20A2E6900EC9CF3F05BF /* libPods-hotwheels_controler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 901044195AD4474DBDDFA6C3 /* libPods-hotwheels_controler.a */; };
 /* End PBXBuildFile section */
@@ -23,6 +24,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = hotwheels_controler;
+		};
+		90FD3A7A296774D800B69B74 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 90FD3A76296774D800B69B74 /* RNReactNativeHapticFeedback.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNReactNativeHapticFeedback;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -43,6 +51,7 @@
 		88EA54DAA91FDF4282DDD4C2 /* Pods-hotwheels_controler.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hotwheels_controler.release.xcconfig"; path = "Target Support Files/Pods-hotwheels_controler/Pods-hotwheels_controler.release.xcconfig"; sourceTree = "<group>"; };
 		8E1F1753A0679D4AAABA51F1 /* Pods-hotwheels_controler-hotwheels_controlerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hotwheels_controler-hotwheels_controlerTests.debug.xcconfig"; path = "Target Support Files/Pods-hotwheels_controler-hotwheels_controlerTests/Pods-hotwheels_controler-hotwheels_controlerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		901044195AD4474DBDDFA6C3 /* libPods-hotwheels_controler.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-hotwheels_controler.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		90FD3A76296774D800B69B74 /* RNReactNativeHapticFeedback.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNReactNativeHapticFeedback.xcodeproj; path = "../node_modules/react-native-haptic-feedback/ios/RNReactNativeHapticFeedback.xcodeproj"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -59,6 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90FD3A7C2967752000B69B74 /* libRNReactNativeHapticFeedback.a in Frameworks */,
 				BFFD20A2E6900EC9CF3F05BF /* libPods-hotwheels_controler.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -109,6 +119,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				90FD3A76296774D800B69B74 /* RNReactNativeHapticFeedback.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -133,6 +144,14 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* hotwheels_controler.app */,
 				00E356EE1AD99517003FC87E /* hotwheels_controlerTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		90FD3A77296774D800B69B74 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				90FD3A7B296774D800B69B74 /* libRNReactNativeHapticFeedback.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -225,6 +244,12 @@
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 90FD3A77296774D800B69B74 /* Products */;
+					ProjectRef = 90FD3A76296774D800B69B74 /* RNReactNativeHapticFeedback.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* hotwheels_controler */,
@@ -232,6 +257,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		90FD3A7B296774D800B69B74 /* libRNReactNativeHapticFeedback.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNReactNativeHapticFeedback.a;
+			remoteRef = 90FD3A7A296774D800B69B74 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		00E356EC1AD99517003FC87E /* Resources */ = {

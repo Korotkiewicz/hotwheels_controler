@@ -50,6 +50,9 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const isWorking = () =>
+    props.device?.isConnected() && commandCharacteristic && moveCharacteristic;
+
   const toggleLight = () => {
     commandCharacteristic
       ?.writeWithResponse(
@@ -83,11 +86,6 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
       //waiting
     }
   };
-
-  const isWorking = () =>
-    props.device?.isConnected() &&
-    commandCharacteristic &&
-    moveCharacteristic;
 
   useFocusEffect(
     useCallback(() => {
@@ -141,7 +139,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
             </TouchableOpacity>
           </View>
           <View style={styles.steeringContainer}>
-            <TouchPad onMove={move}></TouchPad>
+            <TouchPad onMove={move} disabled={!isWorking()} />
           </View>
         </View>
       </View>

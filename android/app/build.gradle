@@ -277,6 +277,8 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    compile project(':react-native-haptic-feedback')
 }
 
 if (isNewArchitectureEnabled()) {

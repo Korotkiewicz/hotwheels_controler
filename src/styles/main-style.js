@@ -122,20 +122,32 @@ const mainStyle = {
     justifyContent: 'center',
     alignItems: 'center',
   },
-  touchPad: {
-    position: 'relative',
-    width: '80%',
+  touchPadWrapper: {
+    width: '95%',
     aspectRatio: 1,
-    borderRadius: 20,
-    borderWidth: 5,
+    padding: 10,
+    borderRadius: 17,
+    borderWidth: 3,
     borderColor: Colors.lighter,
     backgroundColor: Colors.darker,
+  },
+  touchPad: {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
     flexWrap: 'wrap',
+  },
+  disabledTouchPad: {
+    opacity: 0.4,
   },
   touchPadCursor: {
     backgroundColor: 'orange',
   },
   lightButtonTouchable: {
+    width: 80,
+    height: 80,
+  },
+  adjustButtonTouchable: {
     width: 80,
     height: 80,
   },
@@ -196,6 +208,22 @@ const mainStyle = {
   throttleTouchable: {
     width: 80,
     height: 80,
+  },
+  touchHorizontalLine: {
+    backgroundColor: Colors.lighter,
+    width: '100%',
+    height: 1,
+    position: 'absolute',
+    left: 0,
+    top: '50%',
+  },
+  touchVerticallLine: {
+    backgroundColor: Colors.lighter,
+    height: '100%',
+    width: 1,
+    position: 'absolute',
+    left: '50%',
+    top: 0,
   },
 };
 
