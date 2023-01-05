@@ -21,9 +21,11 @@ const styles = StyleSheet.create(mainStyle);
 
 const CURSOR_SIDE_SIZE = 20;
 const CURSOR_HALF_SIDE_SIZE = CURSOR_SIDE_SIZE / 2;
+const MIN_DELAY_BETWEEN_MOVE = 100; //milisec
 
 const TouchPad = ({onMove}): Node => {
   const touch = useRef(new Animated.ValueXY({x: 0, y: 0})).current;
+  const lastMove = useRef(Date.now());
 
   const [touchCenterX, setTouchCenterX] = useState(0);
   const [touchCenterY, setTouchCenterY] = useState(0);
@@ -73,9 +75,12 @@ const TouchPad = ({onMove}): Node => {
       style={styles.touchPad}
       onStartShouldSetResponder={() => true}
       onMoveShouldSetResponder={() => true}
-      onResponderMove={event =>
-        move(event.nativeEvent.locationX, event.nativeEvent.locationY)
-      }
+      onResponderMove={event => {
+        if (Date.now() - lastMove.current > MIN_DELAY_BETWEEN_MOVE) {
+          move(event.nativeEvent.locationX, event.nativeEvent.locationY);
+          lastMove.current = Date.now();
+        }
+      }}
       onResponderRelease={() => {
         Animated.spring(touch, {
           toValue: {

@@ -69,7 +69,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   };
 
   const turn = (number: number) => {
-    if (canMoveX.current === true) {
+    if (canMoveX.current === true || number === 0) {
       canMoveX.current = false;
       turnCharacteristic
         ?.writeWithResponse(btoa(number + ''))
@@ -88,7 +88,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   };
 
   const throttle = (number: number) => {
-    if (canMoveY.current === true) {
+    if (canMoveY.current === true || number === 0) {
       canMoveY.current = false;
       throttleCharacteristic
         ?.writeWithResponse(btoa(number + ''))

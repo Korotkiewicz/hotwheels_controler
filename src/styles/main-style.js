@@ -124,7 +124,7 @@ const mainStyle = {
   },
   touchPad: {
     position: 'relative',
-    width: '90%',
+    width: '80%',
     aspectRatio: 1,
     borderRadius: 20,
     borderWidth: 5,
