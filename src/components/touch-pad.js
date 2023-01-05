@@ -21,7 +21,7 @@ const styles = StyleSheet.create(mainStyle);
 
 const CURSOR_SIDE_SIZE = 20;
 const CURSOR_HALF_SIDE_SIZE = CURSOR_SIDE_SIZE / 2;
-const MIN_DELAY_BETWEEN_MOVE = 100; //milisec
+const MIN_DELAY_BETWEEN_MOVE = 1; //milisec
 
 const TouchPad = ({onMove}): Node => {
   const touch = useRef(new Animated.ValueXY({x: 0, y: 0})).current;

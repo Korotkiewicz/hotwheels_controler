@@ -29,8 +29,7 @@ import {
   TURN_LIGHTS_OFF_COMMAND,
   TURN_LIGHTS_ON_COMMAND,
   COMMAND_CHARACTERISTIC_UUID,
-  TURN_CHARACTERISTIC_UUID,
-  THROTTLE_CHARACTERISTIC_UUID,
+  MOVE_CHARACTERISTIC_UUID,
 } from '../device-config';
 import {btoa} from 'react-native-quick-base64';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
@@ -40,14 +39,12 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   const isDarkMode = useColorScheme() === 'dark';
   const [commandCharacteristic: Characteristic, setCommandCharacteristic] =
     useState(null);
-  const [turnCharacteristic: Characteristic, setTurnCharacteristic] =
-    useState(null);
-  const [throttleCharacteristic: Characteristic, setThrottleCharacteristic] =
+  const [moveCharacteristic: Characteristic, setMoveCharacteristic] =
     useState(null);
   const [lights, setLights] = useState(false);
   const statusBarHeight = getStatusBarHeight();
-  const canMoveX = useRef(true);
-  const canMoveY = useRef(true);
+  const canMove = useRef(true);
+  const dimensions = useWindowDimensions();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -68,57 +65,29 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
     setLights(!lights);
   };
 
-  const turn = (number: number) => {
-    if (canMoveX.current === true || number === 0) {
-      canMoveX.current = false;
-      turnCharacteristic
-        ?.writeWithResponse(btoa(number + ''))
-        .then(characteristic => {
-          canMoveX.current = true;
-        })
-        .catch(error => {
-          canMoveX.current = true;
-          if (isWorking()) {
-            Alert.alert('Error during turrning', error.message);
-          }
-        });
-    } else {
-      //waiting
-    }
-  };
-
-  const throttle = (number: number) => {
-    if (canMoveY.current === true || number === 0) {
-      canMoveY.current = false;
-      throttleCharacteristic
-        ?.writeWithResponse(btoa(number + ''))
-        .then(characteristic => {
-          canMoveY.current = true;
-          //throttle correctly
-        })
-        .catch(error => {
-          canMoveY.current = true;
-          if (isWorking()) {
-            Alert.alert('Error during throttling', error.message);
-          }
-        });
-    } else {
-      //waiting
-    }
-  };
-
   const move = (x: number, y: number) => {
-    turn(x);
-    throttle(y);
+    if (canMove.current === true || (x === 0 && y === 0)) {
+      canMove.current = false;
+      moveCharacteristic
+        ?.writeWithResponse(btoa(x + ':' + y))
+        .then(characteristic => {
+          canMove.current = true;
+        })
+        .catch(error => {
+          canMove.current = true;
+          if (isWorking()) {
+            Alert.alert('Error during moving', error.message);
+          }
+        });
+    } else {
+      //waiting
+    }
   };
-
-  const dimensions = useWindowDimensions();
 
   const isWorking = () =>
     props.device?.isConnected() &&
     commandCharacteristic &&
-    turnCharacteristic &&
-    throttleCharacteristic;
+    moveCharacteristic;
 
   useFocusEffect(
     useCallback(() => {
@@ -129,10 +98,8 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
             if (characteristic.isWritableWithResponse) {
               if (characteristic.uuid === COMMAND_CHARACTERISTIC_UUID) {
                 setCommandCharacteristic(characteristic);
-              } else if (characteristic.uuid === TURN_CHARACTERISTIC_UUID) {
-                setTurnCharacteristic(characteristic);
-              } else if (characteristic.uuid === THROTTLE_CHARACTERISTIC_UUID) {
-                setThrottleCharacteristic(characteristic);
+              } else if (characteristic.uuid === MOVE_CHARACTERISTIC_UUID) {
+                setMoveCharacteristic(characteristic);
               }
             }
           });
