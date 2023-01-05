@@ -109,10 +109,6 @@ const SelectBluetooth: () => Node = (props: PropsWithDeviceAndManager) => {
       })
       .then(device => {
         props.setDevice(device);
-        Alert.alert(
-          'Correctly connected to',
-          device.localName || device.name || device.title || device.id,
-        );
 
         navigation.navigate('Options');
 

@@ -35,7 +35,7 @@ const Options: (screenProps) => Node = (props: PropsWithDeviceAndManager) => {
     if(props.device && props.device.isConnected()) {
       props.bleManager
         .cancelDeviceConnection(props.device.id)
-        .then(device => Alert.alert('Disconnected'))
+        .then(device => {})
         .catch(error => Alert.alert('Disconnecting error', error.message + ' Reason: ' + error.reason));
       props.setDevice(null);
     }

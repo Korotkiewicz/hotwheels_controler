@@ -11,14 +11,13 @@ import type {Node} from 'react';
 import {
   Alert,
   SafeAreaView,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   useColorScheme,
   TouchableOpacity,
   View,
-  useWindowDimensions
+  useWindowDimensions,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import mainStyle from '../styles/main-style';
@@ -61,7 +60,8 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
         //lighs toggled correctly
       })
       .catch(error => {
-        Alert.alert('Error change lights', error.message);
+        Alert.alert('Error change lights', isWorking() ? 'true' : 'false');
+        isWorking();
       });
     setLights(!lights);
   };
@@ -73,7 +73,8 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
         //turn correctly
       })
       .catch(error => {
-        Alert.alert('Error during turrning', error.message);
+        // Alert.alert('Error during turrning', error.message);
+        isWorking();
       });
   };
 
@@ -84,7 +85,8 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
         //throttle correctly
       })
       .catch(error => {
-        Alert.alert('Error during throttling', error.message);
+        // Alert.alert('Error during throttling', error.message);
+        isWorking();
       });
   };
 
@@ -96,7 +98,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   const dimensions = useWindowDimensions();
 
   const isWorking = () =>
-    props.device.isConnected() &&
+    props.device?.isConnected() &&
     commandCharacteristic &&
     turnCharacteristic &&
     throttleCharacteristic;
@@ -104,7 +106,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   useFocusEffect(
     useCallback(() => {
       props.device
-        .characteristicsForService(SERVICE_UUID)
+        ?.characteristicsForService(SERVICE_UUID)
         .then((characteristics: Characteristic[]) => {
           characteristics.forEach((characteristic: Characteristic) => {
             if (characteristic.isWritableWithResponse) {
