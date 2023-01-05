@@ -92,7 +92,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
 
   const move = (x: number, y: number) => {
     turn(x);
-    // throttle(y);
+    throttle(y);
   };
 
   const dimensions = useWindowDimensions();
@@ -155,60 +155,6 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                 <Text style={styles.lightButtonText}>Lights</Text>
               </View>
             </TouchableOpacity>
-          </View>
-          <View style={styles.steeringControlsContainer}>
-            <View style={styles.movingButtonWrapper}>
-              <TouchableOpacity
-                style={[
-                  styles.turnTouchable,
-                  !isWorking() ? styles.disabledButton : {},
-                ]}
-                disabled={!isWorking()}
-                onPress={() => turn(-500)}>
-                <View style={styles.turnButton}>
-                  <Text style={styles.turnButtonText}>Left</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.movingButtonWrapper}>
-              <TouchableOpacity
-                style={[
-                  styles.turnTouchable,
-                  !isWorking() ? styles.disabledButton : {},
-                ]}
-                disabled={!isWorking()}
-                onPress={() => turn(100)}>
-                <View style={styles.turnButton}>
-                  <Text style={styles.turnButtonText}>Right</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.movingButtonWrapper}>
-              <TouchableOpacity
-                style={[
-                  styles.throttleTouchable,
-                  !isWorking() ? styles.disabledButton : {},
-                ]}
-                disabled={!isWorking()}
-                onPress={() => throttle(100)}>
-                <View style={styles.throttleButton}>
-                  <Text style={styles.throttleButtonText}>Forward</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.movingButtonWrapper}>
-              <TouchableOpacity
-                style={[
-                  styles.throttleTouchable,
-                  !isWorking() ? styles.disabledButton : {},
-                ]}
-                disabled={!isWorking()}
-                onPress={() => throttle(-100)}>
-                <View style={styles.throttleButton}>
-                  <Text style={styles.throttleButtonText}>Backward</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
           </View>
           <View style={styles.steeringContainer}>
             <TouchPad onMove={move}></TouchPad>

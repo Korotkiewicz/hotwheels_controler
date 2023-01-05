@@ -116,14 +116,8 @@ const mainStyle = {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  steeringControlsContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   steeringContainer: {
-    flex: 4,
+    flex: 5,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
