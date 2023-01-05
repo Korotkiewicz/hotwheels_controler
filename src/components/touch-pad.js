@@ -20,7 +20,7 @@ const styles = StyleSheet.create(mainStyle);
 
 const hapticOptions = {
   enableVibrateFallback: true,
-  ignoreAndroidSystemSettings: false
+  ignoreAndroidSystemSettings: false,
 };
 
 const CURSOR_SIDE_SIZE = 20;
@@ -57,6 +57,8 @@ const TouchPad = ({onMove, disabled}): Node => {
     }
 
     if (x === touchCenterX.current) {
+      vibrate();
+    } else if (y === touchCenterY.current) {
       vibrate();
     }
 
