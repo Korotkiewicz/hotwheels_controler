@@ -46,6 +46,8 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
     useState(null);
   const [lights, setLights] = useState(false);
   const statusBarHeight = getStatusBarHeight();
+  const canMoveX = useRef(true);
+  const canMoveY = useRef(true);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -67,27 +69,42 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   };
 
   const turn = (number: number) => {
-    turnCharacteristic
-      ?.writeWithResponse(btoa(number + ''))
-      .then(characteristic => {
-        //turn correctly
-      })
-      .catch(error => {
-        // Alert.alert('Error during turrning', error.message);
-        isWorking();
-      });
+    if (canMoveX.current === true) {
+      canMoveX.current = false;
+      turnCharacteristic
+        ?.writeWithResponse(btoa(number + ''))
+        .then(characteristic => {
+          canMoveX.current = true;
+        })
+        .catch(error => {
+          canMoveX.current = true;
+          if (isWorking()) {
+            Alert.alert('Error during turrning', error.message);
+          }
+        });
+    } else {
+      //waiting
+    }
   };
 
   const throttle = (number: number) => {
-    throttleCharacteristic
-      ?.writeWithResponse(btoa(number + ''))
-      .then(characteristic => {
-        //throttle correctly
-      })
-      .catch(error => {
-        // Alert.alert('Error during throttling', error.message);
-        isWorking();
-      });
+    if (canMoveY.current === true) {
+      canMoveY.current = false;
+      throttleCharacteristic
+        ?.writeWithResponse(btoa(number + ''))
+        .then(characteristic => {
+          canMoveY.current = true;
+          //throttle correctly
+        })
+        .catch(error => {
+          canMoveY.current = true;
+          if (isWorking()) {
+            Alert.alert('Error during throttling', error.message);
+          }
+        });
+    } else {
+      //waiting
+    }
   };
 
   const move = (x: number, y: number) => {
