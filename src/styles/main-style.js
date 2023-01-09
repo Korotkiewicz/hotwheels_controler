@@ -146,6 +146,12 @@ const mainStyle = {
   lightButtonTouchable: {
     width: 80,
     height: 80,
+    margin: 2,
+  },
+  optionButtonTouchable: {
+    width: 80,
+    height: 80,
+    margin: 2,
   },
   adjustButtonTouchable: {
     width: 80,
@@ -160,6 +166,14 @@ const mainStyle = {
     alignItems: 'center',
     borderRadius: 50,
   },
+  optionButton: {
+    backgroundColor: 'gray',
+    width: 80,
+    height: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
   lightButtonOff: {
     borderColor: 'red',
     backgroundColor: 'gray',
@@ -170,6 +184,10 @@ const mainStyle = {
   lightButtonText: {
     color: Colors.white,
     fontSize: 20,
+  },
+  optionButtonText: {
+    color: Colors.white,
+    fontSize: 18,
   },
   turnButton: {
     borderWidth: 5,
@@ -224,6 +242,57 @@ const mainStyle = {
     position: 'absolute',
     left: '50%',
     top: 0,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalButton: {
+    backgroundColor: '#007bff',
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  modalButtonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  modalButtonClose: {
+    backgroundColor: '#2196F3',
+  },
+  modalButtonTextStyle: {
+    color: 'white',
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  input: {
+    flex: 1,
+    border: 1,
+    borderColor: 'gray',
+    height: 40,
+    borderWidth: 1,
+    padding: 10,
+    margin: 10,
   },
 };
 

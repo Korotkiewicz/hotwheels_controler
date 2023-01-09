@@ -17,7 +17,7 @@ import {
   useColorScheme,
   TouchableOpacity,
   View,
-  useWindowDimensions,
+  useWindowDimensions, Modal, Pressable, TextInput,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import mainStyle from '../styles/main-style';
@@ -29,7 +29,7 @@ import {
   TURN_LIGHTS_OFF_COMMAND,
   TURN_LIGHTS_ON_COMMAND,
   COMMAND_CHARACTERISTIC_UUID,
-  MOVE_CHARACTERISTIC_UUID,
+  MOVE_CHARACTERISTIC_UUID, COMMAND_CHANGE_MIN_TURN_PREFIX, COMMAND_CHANGE_MAX_TURN_PREFIX,
 } from '../device-config';
 import {btoa} from 'react-native-quick-base64';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
@@ -42,6 +42,9 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   const [moveCharacteristic: Characteristic, setMoveCharacteristic] =
     useState(null);
   const [lights, setLights] = useState(false);
+  const [minTurn, setMinTurn] = useState(0);
+  const [maxTurn, setMaxTurn] = useState(100);
+  const [optionModalVisible, setOptionModalVisible] = useState(false);
   const statusBarHeight = getStatusBarHeight();
   const canMove = useRef(true);
   const dimensions = useWindowDimensions();
@@ -85,6 +88,32 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
     } else {
       //waiting
     }
+  };
+
+  const saveOptions = () => {
+    setOptionModalVisible(false);
+    commandCharacteristic
+      ?.writeWithResponse(
+        btoa(COMMAND_CHANGE_MIN_TURN_PREFIX + minTurn + ';'),
+      )
+      .then(characteristic => {
+        //lighs toggled correctly
+      })
+      .catch(error => {
+        Alert.alert('Error change min turn', isWorking() ? 'true' : 'false');
+        isWorking();
+      });
+    commandCharacteristic
+      ?.writeWithResponse(
+        btoa(COMMAND_CHANGE_MAX_TURN_PREFIX + maxTurn + ';'),
+      )
+      .then(characteristic => {
+        //lighs toggled correctly
+      })
+      .catch(error => {
+        Alert.alert('Error change max turn', isWorking() ? 'true' : 'false');
+        isWorking();
+      });
   };
 
   useFocusEffect(
@@ -137,11 +166,63 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                 <Text style={styles.lightButtonText}>Lights</Text>
               </View>
             </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.optionButtonTouchable,
+                !isWorking() ? styles.disabledButton : {},
+              ]}
+              disabled={!isWorking()}
+              onPress={() => setOptionModalVisible(true)}>
+              <View
+                style={styles.optionButton}>
+                <Text style={styles.optionButtonText}>Options</Text>
+              </View>
+            </TouchableOpacity>
           </View>
           <View style={styles.steeringContainer}>
             <TouchPad onMove={move} disabled={!isWorking()} />
           </View>
         </View>
+      </View>
+      <View style={styles.modalWrapper}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={optionModalVisible}
+          onRequestClose={() => {
+            setOptionModalVisible(!optionModalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={[styles.modalView, {marginTop: statusBarHeight + 50}]}>
+              <Text style={styles.modalText}>Adjust steerage:</Text>
+              <View style={styles.inputWrapper}>
+                <Text style={styles.modalText}>Left Max turn:</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setMinTurn}
+                  value={minTurn}
+                  keyboardType="numeric"
+                />
+              </View>
+              <View style={styles.inputWrapper}>
+                <Text style={styles.modalText}>Right Max turn:</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setMaxTurn}
+                  value={maxTurn}
+                  keyboardType="numeric"
+                />
+              </View>
+              <Pressable
+                style={[styles.modalButton, styles.modalButtonClose]}
+                onPress={() => saveOptions()}
+              >
+                <Text style={styles.modalButtonTextStyle}>Save</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
       </View>
     </SafeAreaView>
   );
