@@ -44,6 +44,8 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   const [lights, setLights] = useState(false);
   const [minTurn, setMinTurn] = useState(0);
   const [maxTurn, setMaxTurn] = useState(100);
+  const [minThrottle, setMinThrottle] = useState(0);
+  const [maxThrottle, setMaxThrottle] = useState(180);
   const [optionModalVisible, setOptionModalVisible] = useState(false);
   const statusBarHeight = getStatusBarHeight();
   const canMove = useRef(true);
@@ -97,7 +99,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
         btoa(COMMAND_CHANGE_MIN_TURN_PREFIX + minTurn + ';'),
       )
       .then(characteristic => {
-        //lighs toggled correctly
+        //min turn set correctly
       })
       .catch(error => {
         Alert.alert('Error change min turn', isWorking() ? 'true' : 'false');
@@ -108,10 +110,32 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
         btoa(COMMAND_CHANGE_MAX_TURN_PREFIX + maxTurn + ';'),
       )
       .then(characteristic => {
-        //lighs toggled correctly
+        //max turn ser correctly
       })
       .catch(error => {
         Alert.alert('Error change max turn', isWorking() ? 'true' : 'false');
+        isWorking();
+      });
+    commandCharacteristic
+      ?.writeWithResponse(
+        btoa(COMMAND_CHANGE_MIN_THROTTLE_PREFIX + minThrottle + ';'),
+      )
+      .then(characteristic => {
+        //min throttle set correctly
+      })
+      .catch(error => {
+        Alert.alert('Error change min throttle', isWorking() ? 'true' : 'false');
+        isWorking();
+      });
+    commandCharacteristic
+      ?.writeWithResponse(
+        btoa(COMMAND_CHANGE_MAX_THROTTLE_PREFIX + maxThrottle + ';'),
+      )
+      .then(characteristic => {
+        //max throttle ser correctly
+      })
+      .catch(error => {
+        Alert.alert('Error change max throttle', isWorking() ? 'true' : 'false');
         isWorking();
       });
   };
@@ -210,7 +234,27 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                 <TextInput
                   style={styles.input}
                   onChangeText={setMaxTurn}
+                  defaultValue={maxTurn}
                   value={maxTurn}
+                  keyboardType="numeric"
+                />
+              </View>
+               style={styles.inputWrapper}>
+                <Text style={styles.modalText}>Min Throttle:</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setMinThrottle}
+                  value={minThrottle}
+                  keyboardType="numeric"
+                />
+              </View>
+              <View style={styles.inputWrapper}>
+                <Text style={styles.modalText}>Max throttle:</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setMaxThrottle}
+                  defaultValue={maxThrottle}
+                  value={maxThrottle}
                   keyboardType="numeric"
                 />
               </View>
