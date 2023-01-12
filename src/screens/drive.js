@@ -43,7 +43,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
     useState(null);
   const [lights, setLights] = useState(false);
   const [minTurn, setMinTurn] = useState(0);
-  const [maxTurn, setMaxTurn] = useState(100);
+  const [maxTurn, setMaxTurn] = useState(180);
   const [minThrottle, setMinThrottle] = useState(0);
   const [maxThrottle, setMaxThrottle] = useState(180);
   const [optionModalVisible, setOptionModalVisible] = useState(false);
