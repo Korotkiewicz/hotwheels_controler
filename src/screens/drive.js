@@ -17,7 +17,10 @@ import {
   useColorScheme,
   TouchableOpacity,
   View,
-  useWindowDimensions, Modal, Pressable, TextInput,
+  useWindowDimensions,
+  Modal,
+  Pressable,
+  TextInput,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import mainStyle from '../styles/main-style';
@@ -29,7 +32,10 @@ import {
   TURN_LIGHTS_OFF_COMMAND,
   TURN_LIGHTS_ON_COMMAND,
   COMMAND_CHARACTERISTIC_UUID,
-  MOVE_CHARACTERISTIC_UUID, COMMAND_CHANGE_MIN_TURN_PREFIX, COMMAND_CHANGE_MAX_TURN_PREFIX,
+  MOVE_CHARACTERISTIC_UUID,
+  COMMAND_CHANGE_MIN_TURN_PREFIX,
+  COMMAND_CHANGE_MAX_TURN_PREFIX,
+  COMMAND_CHANGE_MAX_THROTTLE_PREFIX,
 } from '../device-config';
 import {btoa} from 'react-native-quick-base64';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
@@ -95,9 +101,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   const saveOptions = () => {
     setOptionModalVisible(false);
     commandCharacteristic
-      ?.writeWithResponse(
-        btoa(COMMAND_CHANGE_MIN_TURN_PREFIX + minTurn + ';'),
-      )
+      ?.writeWithResponse(btoa(COMMAND_CHANGE_MIN_TURN_PREFIX + minTurn + ';'))
       .then(characteristic => {
         //min turn set correctly
       })
@@ -106,9 +110,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
         isWorking();
       });
     commandCharacteristic
-      ?.writeWithResponse(
-        btoa(COMMAND_CHANGE_MAX_TURN_PREFIX + maxTurn + ';'),
-      )
+      ?.writeWithResponse(btoa(COMMAND_CHANGE_MAX_TURN_PREFIX + maxTurn + ';'))
       .then(characteristic => {
         //max turn ser correctly
       })
@@ -118,13 +120,16 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
       });
     commandCharacteristic
       ?.writeWithResponse(
-        btoa(COMMAND_CHANGE_MIN_THROTTLE_PREFIX + minThrottle + ';'),
+        btoa(COMMAND_CHANGE_MAX_TURN_PREFIX + minThrottle + ';'),
       )
       .then(characteristic => {
         //min throttle set correctly
       })
       .catch(error => {
-        Alert.alert('Error change min throttle', isWorking() ? 'true' : 'false');
+        Alert.alert(
+          'Error change min throttle',
+          isWorking() ? 'true' : 'false',
+        );
         isWorking();
       });
     commandCharacteristic
@@ -135,7 +140,10 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
         //max throttle ser correctly
       })
       .catch(error => {
-        Alert.alert('Error change max throttle', isWorking() ? 'true' : 'false');
+        Alert.alert(
+          'Error change max throttle',
+          isWorking() ? 'true' : 'false',
+        );
         isWorking();
       });
   };
@@ -197,8 +205,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
               ]}
               disabled={!isWorking()}
               onPress={() => setOptionModalVisible(true)}>
-              <View
-                style={styles.optionButton}>
+              <View style={styles.optionButton}>
                 <Text style={styles.optionButtonText}>Options</Text>
               </View>
             </TouchableOpacity>
@@ -215,8 +222,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
           visible={optionModalVisible}
           onRequestClose={() => {
             setOptionModalVisible(!optionModalVisible);
-          }}
-        >
+          }}>
           <View style={styles.centeredView}>
             <View style={[styles.modalView, {marginTop: statusBarHeight + 50}]}>
               <Text style={styles.modalText}>Adjust steerage:</Text>
@@ -239,7 +245,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                   keyboardType="numeric"
                 />
               </View>
-               style={styles.inputWrapper}>
+              <View style={styles.inputWrapper}>
                 <Text style={styles.modalText}>Min Throttle:</Text>
                 <TextInput
                   style={styles.input}
@@ -260,8 +266,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
               </View>
               <Pressable
                 style={[styles.modalButton, styles.modalButtonClose]}
-                onPress={() => saveOptions()}
-              >
+                onPress={() => saveOptions()}>
                 <Text style={styles.modalButtonTextStyle}>Save</Text>
               </Pressable>
             </View>
