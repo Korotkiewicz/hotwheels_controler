@@ -164,6 +164,15 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                 setMoveCharacteristic(characteristic);
               } else if (characteristic.uuid === READ_CHARACTERISTIC_UUID) {
                 setReadCharacteristic(characteristic);
+                characteristic.monitor((err, update) => {
+                  if (err) {
+                    console.log(`characteristic error: ${err}`);
+                    console.log(JSON.stringify(err));
+                  } else {
+                    Alert.alert("Is Characteristics Readable:",update.isReadable);
+                    Alert.alert("Data from HW", atob(update.value)); 
+                  }
+                });
               }
             }
           });
