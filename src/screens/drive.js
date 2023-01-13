@@ -31,6 +31,7 @@ import {
   SERVICE_UUID,
   TURN_LIGHTS_OFF_COMMAND,
   TURN_LIGHTS_ON_COMMAND,
+  READ_CHARACTERISTIC_UUID,
   COMMAND_CHARACTERISTIC_UUID,
   MOVE_CHARACTERISTIC_UUID,
   COMMAND_CHANGE_MIN_TURN_PREFIX,
@@ -46,6 +47,8 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   const [commandCharacteristic: Characteristic, setCommandCharacteristic] =
     useState(null);
   const [moveCharacteristic: Characteristic, setMoveCharacteristic] =
+    useState(null);
+  const [readCharacteristic: Characteristic, setReadCharacteristic] =
     useState(null);
   const [lights, setLights] = useState(false);
   const [minTurn, setMinTurn] = useState(0);
@@ -159,6 +162,8 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                 setCommandCharacteristic(characteristic);
               } else if (characteristic.uuid === MOVE_CHARACTERISTIC_UUID) {
                 setMoveCharacteristic(characteristic);
+              } else if (characteristic.uuid === READ_CHARACTERISTIC_UUID) {
+                setReadCharacteristic(characteristic);
               }
             }
           });
