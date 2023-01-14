@@ -110,9 +110,10 @@ const TouchPad = ({onMove, disabled}): Node => {
         }}
         onLayout={onLayout}>
 
-        <View style={styles.touchHorizontalLine} />
-        <View style={styles.touchVerticallLine} />
+        <View pointerEvents="none" style={styles.touchHorizontalLine} />
+        <View pointerEvents="none" style={styles.touchVerticallLine} />
         <Animated.View
+          pointerEvents="none"
           style={{
             position: 'absolute',
             left: Animated.subtract(touch.x, CURSOR_HALF_SIDE_SIZE),

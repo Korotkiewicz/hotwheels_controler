@@ -263,18 +263,17 @@ const mainStyle = {
     textAlign: 'center',
   },
   modalButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#a1a1a1',
     paddingTop: 20,
     paddingBottom: 20,
     paddingLeft: 20,
     paddingRight: 20,
     borderRadius: 10,
     marginTop: 10,
+    marginLeft: 5,
+    marginRight: 5,
   },
-  modalButtonOpen: {
-    backgroundColor: '#d1d1d1',
-  },
-  modalButtonClose: {
+  modalButtonPrimary: {
     backgroundColor: '#2196F3',
   },
   modalButtonTextStyle: {
@@ -286,18 +285,22 @@ const mainStyle = {
     flexDirection: 'row',
   },
   inputWrapper: {
+    width: '100%',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   input: {
-    flex: 1,
     border: 1,
     borderColor: 'gray',
     height: 40,
+    width: 80,
     borderWidth: 1,
     padding: 10,
     margin: 10,
+  },
+  inputText: {
+    justifyContent: 'center',
   },
 };
 

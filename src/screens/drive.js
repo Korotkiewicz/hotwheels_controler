@@ -66,11 +66,8 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const isWorking = useCallback(() => {
-    return (
-      props.device?.isConnected() && commandCharacteristic && moveCharacteristic
-    );
-  }, [commandCharacteristic, moveCharacteristic, props.device]);
+  const isWorking = () =>
+    props.device?.isConnected() && commandCharacteristic && moveCharacteristic;
 
   const toggleLight = () => {
     commandCharacteristic
@@ -87,17 +84,18 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
     setLights(!lights);
   };
 
-  const requestDeviceInfo = useCallback(() => {
-    commandCharacteristic
-      ?.writeWithResponse(btoa(COMMAND_GET_INFO))
-      .then(characteristic => {
-        //gen info send correctly
-      })
-      .catch(error => {
-        Alert.alert('Error getting device info');
-        isWorking();
-      });
-  }, [commandCharacteristic, isWorking]);
+  const requestDeviceInfo = () => {
+    if (commandCharacteristic && readCharacteristic) {
+      commandCharacteristic
+        ?.writeWithResponse(btoa(COMMAND_GET_INFO))
+        .then(characteristic => {
+          //Alert.alert('Get info request goes');
+        })
+        .catch(error => {
+          Alert.alert('Error getting device info');
+        });
+    }
+  };
 
   const move = (x: number, y: number) => {
     if (canMove.current === true || (x === 0 && y === 0)) {
@@ -118,18 +116,12 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
     }
   };
 
-  const monitor = (err, update) => {
+  const monitorDevice = (err, update) => {
     if (err) {
       console.log(`characteristic error: ${err}`);
       console.log(JSON.stringify(err));
     } else {
-      if (!update.isReadable) {
-        Alert.alert('Characteristics is NOT Readable');
-        return;
-      }
-
       let updateValue = atob(update.value);
-
       if (updateValue.startsWith(COMMAND_CHANGE_MIN_TURN_PREFIX)) {
         setMinTurn(
           Number(
@@ -185,7 +177,6 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
       })
       .catch(error => {
         Alert.alert('Error change min turn', isWorking() ? 'true' : 'false');
-        isWorking();
       });
     commandCharacteristic
       ?.writeWithResponse(btoa(COMMAND_CHANGE_MAX_TURN_PREFIX + maxTurn + ';'))
@@ -194,7 +185,6 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
       })
       .catch(error => {
         Alert.alert('Error change max turn', isWorking() ? 'true' : 'false');
-        isWorking();
       });
     commandCharacteristic
       ?.writeWithResponse(
@@ -208,7 +198,6 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
           'Error change min throttle',
           isWorking() ? 'true' : 'false',
         );
-        isWorking();
       });
     commandCharacteristic
       ?.writeWithResponse(
@@ -222,8 +211,12 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
           'Error change max throttle',
           isWorking() ? 'true' : 'false',
         );
-        isWorking();
       });
+  };
+
+  const showOptionsModal = () => {
+    requestDeviceInfo();
+    setOptionModalVisible(true);
   };
 
   useFocusEffect(
@@ -237,18 +230,19 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                 setCommandCharacteristic(characteristic);
               } else if (characteristic.uuid === MOVE_CHARACTERISTIC_UUID) {
                 setMoveCharacteristic(characteristic);
-              } else if (characteristic.uuid === READ_CHARACTERISTIC_UUID) {
+              }
+            } else {
+              if (
+                characteristic.uuid === READ_CHARACTERISTIC_UUID &&
+                readCharacteristic?.id !== characteristic.id
+              ) {
                 setReadCharacteristic(characteristic);
-                characteristic.monitor(monitor);
+                characteristic.monitor(monitorDevice);
               }
             }
           });
-
-          if (isWorking()) {
-            requestDeviceInfo();
-          }
         });
-    }, [isWorking, props.device, requestDeviceInfo]),
+    }, [props.device]),
   );
 
   return (
@@ -289,7 +283,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                 !isWorking() ? styles.disabledButton : {},
               ]}
               disabled={!isWorking()}
-              onPress={() => setOptionModalVisible(true)}>
+              onPress={showOptionsModal}>
               <View style={styles.optionButton}>
                 <Text style={styles.optionButtonText}>Options</Text>
               </View>
@@ -312,42 +306,40 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
             <View style={[styles.modalView, {marginTop: statusBarHeight + 50}]}>
               <Text style={styles.modalText}>Adjust steerage:</Text>
               <View style={styles.inputWrapper}>
-                <Text style={styles.modalText}>Left Max turn:</Text>
+                <Text style={styles.inputText}>Left Max turn:</Text>
                 <TextInput
                   style={styles.input}
                   onChangeText={setMinTurn}
-                  value={minTurn}
-                  keyboardType="numeric"
-                />
+                  keyboardType="numeric">
+                  {minTurn}
+                </TextInput>
               </View>
               <View style={styles.inputWrapper}>
-                <Text style={styles.modalText}>Right Max turn:</Text>
+                <Text style={styles.inputText}>Right Max turn:</Text>
                 <TextInput
                   style={styles.input}
                   onChangeText={setMaxTurn}
-                  defaultValue={maxTurn}
-                  value={maxTurn}
-                  keyboardType="numeric"
-                />
+                  keyboardType="numeric">
+                  {maxTurn}
+                </TextInput>
               </View>
               <View style={styles.inputWrapper}>
-                <Text style={styles.modalText}>Min Throttle:</Text>
+                <Text style={styles.inputText}>Min Throttle:</Text>
                 <TextInput
                   style={styles.input}
                   onChangeText={setMinThrottle}
-                  value={minThrottle}
-                  keyboardType="numeric"
-                />
+                  keyboardType="numeric">
+                  {minThrottle}
+                </TextInput>
               </View>
               <View style={styles.inputWrapper}>
-                <Text style={styles.modalText}>Max throttle:</Text>
+                <Text style={styles.inputText}>Max throttle:</Text>
                 <TextInput
                   style={styles.input}
                   onChangeText={setMaxThrottle}
-                  defaultValue={maxThrottle}
-                  value={maxThrottle}
-                  keyboardType="numeric"
-                />
+                  keyboardType="numeric">
+                  {maxThrottle}
+                </TextInput>
               </View>
               <View style={styles.centeredView}>
                 <Pressable
@@ -356,7 +348,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                   <Text style={styles.modalButtonTextStyle}>Cancel</Text>
                 </Pressable>
                 <Pressable
-                  style={[styles.modalButton, styles.modalButtonClose]}
+                  style={[styles.modalButton, styles.modalButtonPrimary]}
                   onPress={() => saveOptions()}>
                   <Text style={styles.modalButtonTextStyle}>Save</Text>
                 </Pressable>
