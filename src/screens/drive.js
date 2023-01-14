@@ -34,6 +34,7 @@ import {
   READ_CHARACTERISTIC_UUID,
   COMMAND_CHARACTERISTIC_UUID,
   MOVE_CHARACTERISTIC_UUID,
+  COMMAND_GET_INFO,
   COMMAND_CHANGE_MIN_TURN_PREFIX,
   COMMAND_CHANGE_MAX_TURN_PREFIX,
   COMMAND_CHANGE_MAX_THROTTLE_PREFIX,
@@ -81,7 +82,21 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
       });
     setLights(!lights);
   };
-
+  
+  const requestDeviceInfo = () => {
+    commandCharacteristic
+      ?.writeWithResponse(
+        btoa(COMMAND_GET_INFO),
+      )
+      .then(characteristic => {
+        //lighs toggled correctly
+      })
+      .catch(error => {
+        Alert.alert('Error getting device info');
+        isWorking();
+      });
+    setLights(!lights);
+  };
   const move = (x: number, y: number) => {
     if (canMove.current === true || (x === 0 && y === 0)) {
       canMove.current = false;
@@ -176,6 +191,10 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
               }
             }
           });
+          
+          if (isWorking()) {
+            requestDeviceInfo();
+          }
         });
     }, [props.device]),
   );
