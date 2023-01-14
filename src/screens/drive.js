@@ -125,8 +125,8 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
       let updateValue = atob(update.value);
       Alert.alert("Is Characteristics Readable:",update.isReadable);
       if (updateValue.startsWith(COMMAND_CHANGE_MIN_TURN_PREFIX)) {
-        setMinTurn(10);
-      } else {
+        setMinTurn(Number(updateValue.substring(COMMAND_CHANGE_MIN_TURN_PREFIX.length,updateValue.indexOf(';'))));
+      } !else {
         Alert.alert("Data from HW", updateValue); 
       }
     }
