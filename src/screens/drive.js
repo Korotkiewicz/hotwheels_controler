@@ -37,10 +37,10 @@ import {
   COMMAND_GET_INFO,
   COMMAND_CHANGE_MIN_TURN_PREFIX,
   COMMAND_CHANGE_MAX_TURN_PREFIX,
-  COMMAND_CHANGE_MIN_THROTTLE_PREFIX 
+  COMMAND_CHANGE_MIN_THROTTLE_PREFIX,
   COMMAND_CHANGE_MAX_THROTTLE_PREFIX,
 } from '../device-config';
-import {btoa} from 'react-native-quick-base64';
+import {atob, btoa} from 'react-native-quick-base64';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import TouchPad from '../components/touch-pad';
 
@@ -66,8 +66,11 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const isWorking = () =>
-    props.device?.isConnected() && commandCharacteristic && moveCharacteristic;
+  const isWorking = useCallback(() => {
+    return (
+      props.device?.isConnected() && commandCharacteristic && moveCharacteristic
+    );
+  }, [commandCharacteristic, moveCharacteristic, props.device]);
 
   const toggleLight = () => {
     commandCharacteristic
@@ -83,21 +86,19 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
       });
     setLights(!lights);
   };
-  
-  const requestDeviceInfo = () => {
+
+  const requestDeviceInfo = useCallback(() => {
     commandCharacteristic
-      ?.writeWithResponse(
-        btoa(COMMAND_GET_INFO),
-      )
+      ?.writeWithResponse(btoa(COMMAND_GET_INFO))
       .then(characteristic => {
-        //lighs toggled correctly
+        //gen info send correctly
       })
       .catch(error => {
         Alert.alert('Error getting device info');
         isWorking();
       });
-    setLights(!lights);
-  };
+  }, [commandCharacteristic, isWorking]);
+
   const move = (x: number, y: number) => {
     if (canMove.current === true || (x === 0 && y === 0)) {
       canMove.current = false;
@@ -116,22 +117,65 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
       //waiting
     }
   };
-  
+
   const monitor = (err, update) => {
     if (err) {
       console.log(`characteristic error: ${err}`);
       console.log(JSON.stringify(err));
     } else {
+      if (!update.isReadable) {
+        Alert.alert('Characteristics is NOT Readable');
+        return;
+      }
+
       let updateValue = atob(update.value);
-      Alert.alert("Is Characteristics Readable:",update.isReadable);
+
       if (updateValue.startsWith(COMMAND_CHANGE_MIN_TURN_PREFIX)) {
-        setMinTurn(Number(updateValue.substring(COMMAND_CHANGE_MIN_TURN_PREFIX.length,updateValue.indexOf(';'))));
-      } !else {
-        Alert.alert("Data from HW", updateValue); 
+        setMinTurn(
+          Number(
+            updateValue.substring(
+              COMMAND_CHANGE_MIN_TURN_PREFIX.length,
+              updateValue.indexOf(';'),
+            ),
+          ),
+        );
+      } else if (updateValue.startsWith(COMMAND_CHANGE_MAX_TURN_PREFIX)) {
+        setMaxTurn(
+          Number(
+            updateValue.substring(
+              COMMAND_CHANGE_MAX_TURN_PREFIX.length,
+              updateValue.indexOf(';'),
+            ),
+          ),
+        );
+      } else if (updateValue.startsWith(COMMAND_CHANGE_MIN_THROTTLE_PREFIX)) {
+        setMinThrottle(
+          Number(
+            updateValue.substring(
+              COMMAND_CHANGE_MIN_THROTTLE_PREFIX.length,
+              updateValue.indexOf(';'),
+            ),
+          ),
+        );
+      } else if (updateValue.startsWith(COMMAND_CHANGE_MAX_THROTTLE_PREFIX)) {
+        setMaxThrottle(
+          Number(
+            updateValue.substring(
+              COMMAND_CHANGE_MAX_THROTTLE_PREFIX.length,
+              updateValue.indexOf(';'),
+            ),
+          ),
+        );
+      } else {
+        Alert.alert('Data from HW', updateValue);
       }
     }
   };
-                
+
+  const cancelOptions = () => {
+    setOptionModalVisible(false);
+  };
+
   const saveOptions = () => {
     setOptionModalVisible(false);
     commandCharacteristic
@@ -154,7 +198,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
       });
     commandCharacteristic
       ?.writeWithResponse(
-        btoa(COMMAND_CHANGE_MIN_THROTTLE_PREFIX  + minThrottle + ';'),
+        btoa(COMMAND_CHANGE_MIN_THROTTLE_PREFIX + minThrottle + ';'),
       )
       .then(characteristic => {
         //min throttle set correctly
@@ -199,12 +243,12 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
               }
             }
           });
-          
+
           if (isWorking()) {
             requestDeviceInfo();
           }
         });
-    }, [props.device]),
+    }, [isWorking, props.device, requestDeviceInfo]),
   );
 
   return (
@@ -264,7 +308,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
           onRequestClose={() => {
             setOptionModalVisible(!optionModalVisible);
           }}>
-          <View style={styles.centeredView}>
+          <View>
             <View style={[styles.modalView, {marginTop: statusBarHeight + 50}]}>
               <Text style={styles.modalText}>Adjust steerage:</Text>
               <View style={styles.inputWrapper}>
@@ -305,11 +349,18 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                   keyboardType="numeric"
                 />
               </View>
-              <Pressable
-                style={[styles.modalButton, styles.modalButtonClose]}
-                onPress={() => saveOptions()}>
-                <Text style={styles.modalButtonTextStyle}>Save</Text>
-              </Pressable>
+              <View style={styles.centeredView}>
+                <Pressable
+                  style={[styles.modalButton]}
+                  onPress={() => cancelOptions()}>
+                  <Text style={styles.modalButtonTextStyle}>Cancel</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.modalButton, styles.modalButtonClose]}
+                  onPress={() => saveOptions()}>
+                  <Text style={styles.modalButtonTextStyle}>Save</Text>
+                </Pressable>
+              </View>
             </View>
           </View>
         </Modal>

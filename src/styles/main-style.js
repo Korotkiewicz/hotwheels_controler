@@ -272,13 +272,18 @@ const mainStyle = {
     marginTop: 10,
   },
   modalButtonOpen: {
-    backgroundColor: '#F194FF',
+    backgroundColor: '#d1d1d1',
   },
   modalButtonClose: {
     backgroundColor: '#2196F3',
   },
   modalButtonTextStyle: {
     color: 'white',
+  },
+  centeredView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   inputWrapper: {
     flexDirection: 'row',
