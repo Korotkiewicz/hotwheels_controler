@@ -10,7 +10,6 @@ import React, {useCallback, useRef, useState} from 'react';
 import type {Node} from 'react';
 import {
   Alert,
-  SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
@@ -20,7 +19,7 @@ import {
   useWindowDimensions,
   Modal,
   Pressable,
-  TextInput,
+  TextInput, Dimensions,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import mainStyle from '../styles/main-style';
@@ -43,6 +42,7 @@ import {
 import {atob, btoa} from 'react-native-quick-base64';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import TouchPad from '../components/touch-pad';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -61,6 +61,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   const statusBarHeight = getStatusBarHeight();
   const canMove = useRef(true);
   const dimensions = useWindowDimensions();
+  const [isPortrait, setIsPortrait] = useState(true);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -221,6 +222,14 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
 
   useFocusEffect(
     useCallback(() => {
+      Dimensions.addEventListener('change', ({window: {width, height}}) => {
+        if (width < height) {
+          setIsPortrait(true);
+        } else {
+          setIsPortrait(false);
+        }
+      });
+
       props.device
         ?.characteristicsForService(SERVICE_UUID)
         .then((characteristics: Characteristic[]) => {
@@ -246,52 +255,42 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   );
 
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <SafeAreaView style={[styles.driver, backgroundStyle]}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <View
-        style={[
-          {
-            width: '100%',
-            height: dimensions.height - statusBarHeight,
-            marginTop: -statusBarHeight,
-          },
-          backgroundStyle,
-        ]}>
-        <View style={[styles.driveWrapper, {marginTop: statusBarHeight}]}>
-          <View style={styles.controlButtonsContainer}>
-            <TouchableOpacity
+      <View style={[styles.driveWrapper, isPortrait ? styles.driverWrapperPortrait : styles.driverWrapperLandscape]}>
+        <View style={styles.controlButtonsContainer}>
+          <TouchableOpacity
+            style={[
+              styles.lightButtonTouchable,
+              !isWorking() ? styles.disabledButton : {},
+            ]}
+            disabled={!isWorking()}
+            onPress={() => toggleLight()}>
+            <View
               style={[
-                styles.lightButtonTouchable,
-                !isWorking() ? styles.disabledButton : {},
-              ]}
-              disabled={!isWorking()}
-              onPress={() => toggleLight()}>
-              <View
-                style={[
-                  styles.lightButton,
-                  lights ? styles.lightButtonOn : styles.lightButtonOff,
-                ]}>
-                <Text style={styles.lightButtonText}>Lights</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.optionButtonTouchable,
-                !isWorking() ? styles.disabledButton : {},
-              ]}
-              disabled={!isWorking()}
-              onPress={showOptionsModal}>
-              <View style={styles.optionButton}>
-                <Text style={styles.optionButtonText}>Options</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.steeringContainer}>
-            <TouchPad onMove={move} disabled={!isWorking()} />
-          </View>
+                styles.lightButton,
+                lights ? styles.lightButtonOn : styles.lightButtonOff,
+              ]}>
+              <Text style={styles.lightButtonText}>Lights</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.optionButtonTouchable,
+              !isWorking() ? styles.disabledButton : {},
+            ]}
+            disabled={!isWorking()}
+            onPress={showOptionsModal}>
+            <View style={styles.optionButton}>
+              <Text style={styles.optionButtonText}>Options</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View style={[styles.steeringContainer, isPortrait ? styles.steeringContainerPortrait : styles.steeringContainerLandscape]}>
+          <TouchPad onMove={move} disabled={!isWorking()}/>
         </View>
       </View>
       <View style={styles.modalWrapper}>

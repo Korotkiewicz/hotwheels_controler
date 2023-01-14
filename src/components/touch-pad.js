@@ -1,13 +1,8 @@
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
-import {
-  Alert,
-  Animated,
-  StyleSheet,
-  View,
-} from 'react-native';
+import {Alert, Animated, Dimensions, StyleSheet, View} from 'react-native';
 import mainStyle from '../styles/main-style';
-import {useRef} from 'react';
+import {useCallback, useRef, useState} from 'react';
 import {
   BACKWARD_MAX_THROTTLE,
   FORWARD_MAX_THROTTLE,
@@ -15,6 +10,7 @@ import {
   RIGHT_MAX_TURN,
 } from '../device-config';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import {useFocusEffect} from '@react-navigation/native';
 
 const styles = StyleSheet.create(mainStyle);
 
@@ -34,6 +30,8 @@ const TouchPad = ({onMove, disabled}): Node => {
   const touchCenterY = useRef(0);
   const touchEndX = useRef(0);
   const touchEndY = useRef(0);
+
+  const [isPortrait, setIsPortrait] = useState(true);
 
   const scale = (number, inMin, inMax, outMin, outMax) => {
     return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
@@ -88,12 +86,25 @@ const TouchPad = ({onMove, disabled}): Node => {
     });
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      Dimensions.addEventListener('change', ({window: {width, height}}) => {
+        if (width < height) {
+          setIsPortrait(true);
+        } else {
+          setIsPortrait(false);
+        }
+      });
+    }, []),
+  );
+
   return (
     <View
       style={[
         styles.touchPadWrapper,
         disabled ? styles.disabledTouchPad : {},
         {padding: CURSOR_HALF_SIDE_SIZE},
+        isPortrait ? {width: '95%'} : {height: '95%'},
       ]}>
       <View
         style={styles.touchPad}
@@ -109,7 +120,6 @@ const TouchPad = ({onMove, disabled}): Node => {
           move(touchCenterX.current, touchCenterY.current);
         }}
         onLayout={onLayout}>
-
         <View pointerEvents="none" style={styles.touchHorizontalLine} />
         <View pointerEvents="none" style={styles.touchVerticallLine} />
         <Animated.View

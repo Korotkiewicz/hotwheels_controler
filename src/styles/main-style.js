@@ -104,10 +104,23 @@ const mainStyle = {
     fontSize: 10,
     color: 'gray',
   },
+  driver: {
+    flex: 1,
+  },
   driveWrapper: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
+  },
+  driverWrapperPortrait: {
+    flexDirection: 'column',
+  },
+  driverWrapperLandscape: {
+    flexDirection: 'row',
+    marginLeft: 20,
+    marginRight: 20,
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   controlButtonsContainer: {
     flex: 1,
@@ -122,8 +135,17 @@ const mainStyle = {
     justifyContent: 'center',
     alignItems: 'center',
   },
+  steeringContainerPortrait: {
+    alignItems: 'center',
+  },
+  steeringContainerLandscape: {
+    flex: 3,
+    alignItems: 'flex-end',
+  },
+  modalWrapper: {
+    height: 0,
+  },
   touchPadWrapper: {
-    width: '95%',
     aspectRatio: 1,
     padding: 10,
     borderRadius: 17,
