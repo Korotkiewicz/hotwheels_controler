@@ -37,6 +37,7 @@ import {
   COMMAND_GET_INFO,
   COMMAND_CHANGE_MIN_TURN_PREFIX,
   COMMAND_CHANGE_MAX_TURN_PREFIX,
+  COMMAND_CHANGE_MIN_THROTTLE_PREFIX 
   COMMAND_CHANGE_MAX_THROTTLE_PREFIX,
 } from '../device-config';
 import {btoa} from 'react-native-quick-base64';
@@ -115,7 +116,22 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
       //waiting
     }
   };
-
+  
+  const monitor = (err, update) => {
+    if (err) {
+      console.log(`characteristic error: ${err}`);
+      console.log(JSON.stringify(err));
+    } else {
+      let updateValue = atob(update.value);
+      Alert.alert("Is Characteristics Readable:",update.isReadable);
+      if (updateValue.startsWith(COMMAND_CHANGE_MIN_TURN_PREFIX)) {
+        setMinTurn(10);
+      } else {
+        Alert.alert("Data from HW", updateValue); 
+      }
+    }
+  };
+                
   const saveOptions = () => {
     setOptionModalVisible(false);
     commandCharacteristic
@@ -138,7 +154,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
       });
     commandCharacteristic
       ?.writeWithResponse(
-        btoa(COMMAND_CHANGE_MAX_TURN_PREFIX + minThrottle + ';'),
+        btoa(COMMAND_CHANGE_MIN_THROTTLE_PREFIX  + minThrottle + ';'),
       )
       .then(characteristic => {
         //min throttle set correctly
@@ -179,15 +195,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                 setMoveCharacteristic(characteristic);
               } else if (characteristic.uuid === READ_CHARACTERISTIC_UUID) {
                 setReadCharacteristic(characteristic);
-                characteristic.monitor((err, update) => {
-                  if (err) {
-                    console.log(`characteristic error: ${err}`);
-                    console.log(JSON.stringify(err));
-                  } else {
-                    Alert.alert("Is Characteristics Readable:",update.isReadable);
-                    Alert.alert("Data from HW", atob(update.value)); 
-                  }
-                });
+                characteristic.monitor(monitor);
               }
             }
           });
