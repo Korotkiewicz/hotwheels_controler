@@ -42,6 +42,7 @@ import {
 import {atob, btoa} from 'react-native-quick-base64';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import TouchPad from '../components/touch-pad';
+import Settings from '../components/settings';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
@@ -85,19 +86,6 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
     setLights(!lights);
   };
 
-  const requestDeviceInfo = () => {
-    if (commandCharacteristic && readCharacteristic) {
-      commandCharacteristic
-        ?.writeWithResponse(btoa(COMMAND_GET_INFO))
-        .then(characteristic => {
-          //Alert.alert('Get info request goes');
-        })
-        .catch(error => {
-          Alert.alert('Error getting device info');
-        });
-    }
-  };
-
   const move = (x: number, y: number) => {
     if (canMove.current === true || (x === 0 && y === 0)) {
       canMove.current = false;
@@ -117,108 +105,6 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
     }
   };
 
-  const monitorDevice = (err, update) => {
-    if (err) {
-      console.log(`characteristic error: ${err}`);
-      console.log(JSON.stringify(err));
-    } else {
-      let updateValue = atob(update.value);
-      if (updateValue.startsWith(COMMAND_CHANGE_MIN_TURN_PREFIX)) {
-        setMinTurn(
-          Number(
-            updateValue.substring(
-              COMMAND_CHANGE_MIN_TURN_PREFIX.length,
-              updateValue.indexOf(';'),
-            ),
-          ),
-        );
-      } else if (updateValue.startsWith(COMMAND_CHANGE_MAX_TURN_PREFIX)) {
-        setMaxTurn(
-          Number(
-            updateValue.substring(
-              COMMAND_CHANGE_MAX_TURN_PREFIX.length,
-              updateValue.indexOf(';'),
-            ),
-          ),
-        );
-      } else if (updateValue.startsWith(COMMAND_CHANGE_MIN_THROTTLE_PREFIX)) {
-        setMinThrottle(
-          Number(
-            updateValue.substring(
-              COMMAND_CHANGE_MIN_THROTTLE_PREFIX.length,
-              updateValue.indexOf(';'),
-            ),
-          ),
-        );
-      } else if (updateValue.startsWith(COMMAND_CHANGE_MAX_THROTTLE_PREFIX)) {
-        setMaxThrottle(
-          Number(
-            updateValue.substring(
-              COMMAND_CHANGE_MAX_THROTTLE_PREFIX.length,
-              updateValue.indexOf(';'),
-            ),
-          ),
-        );
-      } else {
-        Alert.alert('Data from HW', updateValue);
-      }
-    }
-  };
-
-  const cancelOptions = () => {
-    setOptionModalVisible(false);
-  };
-
-  const saveOptions = () => {
-    setOptionModalVisible(false);
-    commandCharacteristic
-      ?.writeWithResponse(btoa(COMMAND_CHANGE_MIN_TURN_PREFIX + minTurn + ';'))
-      .then(characteristic => {
-        //min turn set correctly
-      })
-      .catch(error => {
-        Alert.alert('Error change min turn', isWorking() ? 'true' : 'false');
-      });
-    commandCharacteristic
-      ?.writeWithResponse(btoa(COMMAND_CHANGE_MAX_TURN_PREFIX + maxTurn + ';'))
-      .then(characteristic => {
-        //max turn ser correctly
-      })
-      .catch(error => {
-        Alert.alert('Error change max turn', isWorking() ? 'true' : 'false');
-      });
-    commandCharacteristic
-      ?.writeWithResponse(
-        btoa(COMMAND_CHANGE_MIN_THROTTLE_PREFIX + minThrottle + ';'),
-      )
-      .then(characteristic => {
-        //min throttle set correctly
-      })
-      .catch(error => {
-        Alert.alert(
-          'Error change min throttle',
-          isWorking() ? 'true' : 'false',
-        );
-      });
-    commandCharacteristic
-      ?.writeWithResponse(
-        btoa(COMMAND_CHANGE_MAX_THROTTLE_PREFIX + maxThrottle + ';'),
-      )
-      .then(characteristic => {
-        //max throttle ser correctly
-      })
-      .catch(error => {
-        Alert.alert(
-          'Error change max throttle',
-          isWorking() ? 'true' : 'false',
-        );
-      });
-  };
-
-  const showOptionsModal = () => {
-    requestDeviceInfo();
-    setOptionModalVisible(true);
-  };
 
   useFocusEffect(
     useCallback(() => {
@@ -246,7 +132,6 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
                 readCharacteristic?.id !== characteristic.id
               ) {
                 setReadCharacteristic(characteristic);
-                characteristic.monitor(monitorDevice);
               }
             }
           });
@@ -277,84 +162,15 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
               <Text style={styles.lightButtonText}>Lights</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.optionButtonTouchable,
-              !isWorking() ? styles.disabledButton : {},
-            ]}
-            disabled={!isWorking()}
-            onPress={showOptionsModal}>
-            <View style={styles.optionButton}>
-              <Text style={styles.optionButtonText}>Options</Text>
-            </View>
-          </TouchableOpacity>
+          <Settings 
+            isWorking={isWorking()} 
+            commandCharacteristic={commandCharacteristic}
+            readCharacteristic={readCharacteristic}
+          />
         </View>
         <View style={[styles.steeringContainer, isPortrait ? styles.steeringContainerPortrait : styles.steeringContainerLandscape]}>
           <TouchPad onMove={move} disabled={!isWorking()}/>
         </View>
-      </View>
-      <View style={styles.modalWrapper}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={optionModalVisible}
-          onRequestClose={() => {
-            setOptionModalVisible(!optionModalVisible);
-          }}>
-          <View>
-            <View style={[styles.modalView, {marginTop: statusBarHeight + 50}]}>
-              <Text style={styles.modalText}>Adjust steerage:</Text>
-              <View style={styles.inputWrapper}>
-                <Text style={styles.inputText}>Left Max turn:</Text>
-                <TextInput
-                  style={styles.input}
-                  onChangeText={setMinTurn}
-                  keyboardType="numeric">
-                  {minTurn}
-                </TextInput>
-              </View>
-              <View style={styles.inputWrapper}>
-                <Text style={styles.inputText}>Right Max turn:</Text>
-                <TextInput
-                  style={styles.input}
-                  onChangeText={setMaxTurn}
-                  keyboardType="numeric">
-                  {maxTurn}
-                </TextInput>
-              </View>
-              <View style={styles.inputWrapper}>
-                <Text style={styles.inputText}>Min Throttle:</Text>
-                <TextInput
-                  style={styles.input}
-                  onChangeText={setMinThrottle}
-                  keyboardType="numeric">
-                  {minThrottle}
-                </TextInput>
-              </View>
-              <View style={styles.inputWrapper}>
-                <Text style={styles.inputText}>Max throttle:</Text>
-                <TextInput
-                  style={styles.input}
-                  onChangeText={setMaxThrottle}
-                  keyboardType="numeric">
-                  {maxThrottle}
-                </TextInput>
-              </View>
-              <View style={styles.centeredView}>
-                <Pressable
-                  style={[styles.modalButton]}
-                  onPress={() => cancelOptions()}>
-                  <Text style={styles.modalButtonTextStyle}>Cancel</Text>
-                </Pressable>
-                <Pressable
-                  style={[styles.modalButton, styles.modalButtonPrimary]}
-                  onPress={() => saveOptions()}>
-                  <Text style={styles.modalButtonTextStyle}>Save</Text>
-                </Pressable>
-              </View>
-            </View>
-          </View>
-        </Modal>
       </View>
     </SafeAreaView>
   );
