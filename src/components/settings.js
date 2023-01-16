@@ -1,35 +1,19 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import type {Node} from 'react';
 import {
   Alert,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   TouchableOpacity,
   View,
-  useWindowDimensions,
   Modal,
   Pressable,
-  TextInput, Dimensions,
+  TextInput,
 } from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import mainStyle from '../styles/main-style';
 import {Characteristic} from 'react-native-ble-plx';
 import {useFocusEffect} from '@react-navigation/native';
-import type PropsWithDeviceAndManager from '../props-with-device-and-manager';
 import {
-  READ_CHARACTERISTIC_UUID,
-  COMMAND_CHARACTERISTIC_UUID,
-  MOVE_CHARACTERISTIC_UUID,
   COMMAND_GET_INFO,
   COMMAND_CHANGE_MIN_TURN_PREFIX,
   COMMAND_CHANGE_MAX_TURN_PREFIX,
@@ -37,22 +21,27 @@ import {
   COMMAND_CHANGE_MAX_THROTTLE_PREFIX,
 } from '../device-config';
 import {atob, btoa} from 'react-native-quick-base64';
+import {getStatusBarHeight} from 'react-native-status-bar-height';
 
-const Settings: () => Node = (props) => {
-  const [lights, setLights] = useState(false);
+const Settings: () => Node = ({
+  commandCharacteristic,
+  readCharacteristic,
+  isWorking,
+}) => {
   const [minTurn, setMinTurn] = useState(0);
   const [maxTurn, setMaxTurn] = useState(180);
   const [minThrottle, setMinThrottle] = useState(0);
   const [maxThrottle, setMaxThrottle] = useState(180);
   const [optionModalVisible, setOptionModalVisible] = useState(false);
- 
-  
+  const [monitorSubscription, setMonitorSubscription] = useState(null);
+  const statusBarHeight = getStatusBarHeight();
+
   const requestDeviceInfo = () => {
-    if (props.commandCharacteristic && props.readCharacteristic) {
-      props.commandCharacteristic
+    if (commandCharacteristic && readCharacteristic) {
+      commandCharacteristic
         ?.writeWithResponse(btoa(COMMAND_GET_INFO))
         .then(characteristic => {
-          //Alert.alert('Get info request goes');
+          //done correctly
         })
         .catch(error => {
           Alert.alert('Error getting device info');
@@ -114,23 +103,23 @@ const Settings: () => Node = (props) => {
 
   const saveOptions = () => {
     setOptionModalVisible(false);
-    props.commandCharacteristic
+    commandCharacteristic
       ?.writeWithResponse(btoa(COMMAND_CHANGE_MIN_TURN_PREFIX + minTurn + ';'))
       .then(characteristic => {
         //min turn set correctly
       })
       .catch(error => {
-        Alert.alert('Error change min turn', isWorking() ? 'true' : 'false');
+        Alert.alert('Error change min turn', isWorking ? 'true' : 'false');
       });
-    props.commandCharacteristic
+    commandCharacteristic
       ?.writeWithResponse(btoa(COMMAND_CHANGE_MAX_TURN_PREFIX + maxTurn + ';'))
       .then(characteristic => {
         //max turn ser correctly
       })
       .catch(error => {
-        Alert.alert('Error change max turn', isWorking() ? 'true' : 'false');
+        Alert.alert('Error change max turn', isWorking ? 'true' : 'false');
       });
-    props.commandCharacteristic
+    commandCharacteristic
       ?.writeWithResponse(
         btoa(COMMAND_CHANGE_MIN_THROTTLE_PREFIX + minThrottle + ';'),
       )
@@ -138,12 +127,9 @@ const Settings: () => Node = (props) => {
         //min throttle set correctly
       })
       .catch(error => {
-        Alert.alert(
-          'Error change min throttle',
-          isWorking() ? 'true' : 'false',
-        );
+        Alert.alert('Error change min throttle', isWorking ? 'true' : 'false');
       });
-    props.commandCharacteristic
+    commandCharacteristic
       ?.writeWithResponse(
         btoa(COMMAND_CHANGE_MAX_THROTTLE_PREFIX + maxThrottle + ';'),
       )
@@ -151,10 +137,7 @@ const Settings: () => Node = (props) => {
         //max throttle ser correctly
       })
       .catch(error => {
-        Alert.alert(
-          'Error change max throttle',
-          isWorking() ? 'true' : 'false',
-        );
+        Alert.alert('Error change max throttle', isWorking ? 'true' : 'false');
       });
   };
 
@@ -165,22 +148,27 @@ const Settings: () => Node = (props) => {
 
   useFocusEffect(
     useCallback(() => {
-      propos?.readCharacteristic.monitor(monitorDevice);
-    }, [props.readCharacteristic]),
+      if (monitorSubscription) {
+        monitorSubscription.remove();
+      }
+
+      let subscription = readCharacteristic.monitor(monitorDevice);
+      setMonitorSubscription(subscription);
+    }, [readCharacteristic, monitorSubscription]),
   );
 
   return (
     <>
       <TouchableOpacity
-            style={[
-              styles.optionButtonTouchable,
-              !props.isWorking ? styles.disabledButton : {},
-            ]}
-            disabled={!props.isWorking}
-            onPress={showOptionsModal}>
-            <View style={styles.optionButton}>
-              <Text style={styles.optionButtonText}>Options</Text>
-            </View>
+        style={[
+          styles.optionButtonTouchable,
+          !isWorking ? styles.disabledButton : {},
+        ]}
+        disabled={!isWorking}
+        onPress={showOptionsModal}>
+        <View style={styles.optionButton}>
+          <Text style={styles.optionButtonText}>Options</Text>
+        </View>
       </TouchableOpacity>
       <View style={styles.modalWrapper}>
         <Modal
@@ -191,7 +179,7 @@ const Settings: () => Node = (props) => {
             setOptionModalVisible(!optionModalVisible);
           }}>
           <View>
-            <View style={[styles.modalView, {marginTop: statusBarHeight + 50}]}>
+            <View style={[styles.modalView, {marginTop: statusBarHeight + '50'}]}>
               <Text style={styles.modalText}>Adjust steerage:</Text>
               <View style={styles.inputWrapper}>
                 <Text style={styles.inputText}>Left Max turn:</Text>
@@ -245,7 +233,7 @@ const Settings: () => Node = (props) => {
           </View>
         </Modal>
       </View>
-    </SafeAreaView>
+    </>
   );
 };
 

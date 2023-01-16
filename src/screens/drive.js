@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React, {useCallback, useRef, useState} from 'react';
 import type {Node} from 'react';
 import {
@@ -16,10 +8,7 @@ import {
   useColorScheme,
   TouchableOpacity,
   View,
-  useWindowDimensions,
-  Modal,
-  Pressable,
-  TextInput, Dimensions,
+  Dimensions,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import mainStyle from '../styles/main-style';
@@ -33,14 +22,8 @@ import {
   READ_CHARACTERISTIC_UUID,
   COMMAND_CHARACTERISTIC_UUID,
   MOVE_CHARACTERISTIC_UUID,
-  COMMAND_GET_INFO,
-  COMMAND_CHANGE_MIN_TURN_PREFIX,
-  COMMAND_CHANGE_MAX_TURN_PREFIX,
-  COMMAND_CHANGE_MIN_THROTTLE_PREFIX,
-  COMMAND_CHANGE_MAX_THROTTLE_PREFIX,
 } from '../device-config';
 import {atob, btoa} from 'react-native-quick-base64';
-import {getStatusBarHeight} from 'react-native-status-bar-height';
 import TouchPad from '../components/touch-pad';
 import Settings from '../components/settings';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -54,14 +37,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
   const [readCharacteristic: Characteristic, setReadCharacteristic] =
     useState(null);
   const [lights, setLights] = useState(false);
-  const [minTurn, setMinTurn] = useState(0);
-  const [maxTurn, setMaxTurn] = useState(180);
-  const [minThrottle, setMinThrottle] = useState(0);
-  const [maxThrottle, setMaxThrottle] = useState(180);
-  const [optionModalVisible, setOptionModalVisible] = useState(false);
-  const statusBarHeight = getStatusBarHeight();
   const canMove = useRef(true);
-  const dimensions = useWindowDimensions();
   const [isPortrait, setIsPortrait] = useState(true);
 
   const backgroundStyle = {
@@ -105,7 +81,6 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
     }
   };
 
-
   useFocusEffect(
     useCallback(() => {
       Dimensions.addEventListener('change', ({window: {width, height}}) => {
@@ -136,7 +111,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
             }
           });
         });
-    }, [props.device]),
+    }, [props.device, readCharacteristic]),
   );
 
   return (
@@ -145,7 +120,13 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <View style={[styles.driveWrapper, isPortrait ? styles.driverWrapperPortrait : styles.driverWrapperLandscape]}>
+      <View
+        style={[
+          styles.driveWrapper,
+          isPortrait
+            ? styles.driverWrapperPortrait
+            : styles.driverWrapperLandscape,
+        ]}>
         <View style={styles.controlButtonsContainer}>
           <TouchableOpacity
             style={[
@@ -162,14 +143,20 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
               <Text style={styles.lightButtonText}>Lights</Text>
             </View>
           </TouchableOpacity>
-          <Settings 
-            isWorking={isWorking()} 
+          <Settings
+            isWorking={isWorking()}
             commandCharacteristic={commandCharacteristic}
             readCharacteristic={readCharacteristic}
           />
         </View>
-        <View style={[styles.steeringContainer, isPortrait ? styles.steeringContainerPortrait : styles.steeringContainerLandscape]}>
-          <TouchPad onMove={move} disabled={!isWorking()}/>
+        <View
+          style={[
+            styles.steeringContainer,
+            isPortrait
+              ? styles.steeringContainerPortrait
+              : styles.steeringContainerLandscape,
+          ]}>
+          <TouchPad onMove={move} disabled={!isWorking()} />
         </View>
       </View>
     </SafeAreaView>
