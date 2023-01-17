@@ -96,9 +96,17 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
         .then((characteristics: Characteristic[]) => {
           characteristics.forEach((characteristic: Characteristic) => {
             if (characteristic.isWritableWithResponse) {
-              if (characteristic.uuid === COMMAND_CHARACTERISTIC_UUID) {
+              if (
+                characteristic.uuid === COMMAND_CHARACTERISTIC_UUID &&
+                commandCharacteristic?.id !== characteristic.id
+              ) {
                 setCommandCharacteristic(characteristic);
-              } else if (characteristic.uuid === MOVE_CHARACTERISTIC_UUID) {
+              }
+
+              if (
+                characteristic.uuid === MOVE_CHARACTERISTIC_UUID &&
+                moveCharacteristic?.id !== characteristic.id
+              ) {
                 setMoveCharacteristic(characteristic);
               }
             } else {
@@ -111,7 +119,7 @@ const Drive: () => Node = (props: PropsWithDeviceAndManager) => {
             }
           });
         });
-    }, [props.device, readCharacteristic]),
+    }, [props.device]),
   );
 
   return (

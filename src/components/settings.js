@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import type {Node} from 'react';
 import {
   Alert,
@@ -24,10 +24,10 @@ import {atob, btoa} from 'react-native-quick-base64';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 
 const Settings: () => Node = ({
-  commandCharacteristic,
-  readCharacteristic,
-  isWorking,
-}) => {
+                                commandCharacteristic,
+                                readCharacteristic,
+                                isWorking,
+                              }) => {
   const [minTurn, setMinTurn] = useState(0);
   const [maxTurn, setMaxTurn] = useState(180);
   const [minThrottle, setMinThrottle] = useState(0);
@@ -142,20 +142,25 @@ const Settings: () => Node = ({
   };
 
   const showOptionsModal = () => {
+    if (!monitorSubscription) {
+      setMonitorSubscription(readCharacteristic?.monitor(monitorDevice));
+    }
+
     requestDeviceInfo();
     setOptionModalVisible(true);
   };
 
-  useFocusEffect(
-    useCallback(() => {
+  useEffect(() => {
+    if (monitorSubscription) {
+      monitorSubscription.remove();
+    }
+
+    return () => {
       if (monitorSubscription) {
         monitorSubscription.remove();
       }
-
-      let subscription = readCharacteristic.monitor(monitorDevice);
-      setMonitorSubscription(subscription);
-    }, [readCharacteristic, monitorSubscription]),
-  );
+    };
+  }, []);
 
   return (
     <>
@@ -167,7 +172,7 @@ const Settings: () => Node = ({
         disabled={!isWorking}
         onPress={showOptionsModal}>
         <View style={styles.optionButton}>
-          <Text style={styles.optionButtonText}>Options</Text>
+          <Text style={styles.optionButtonText}>Settings</Text>
         </View>
       </TouchableOpacity>
       <View style={styles.modalWrapper}>
@@ -179,7 +184,7 @@ const Settings: () => Node = ({
             setOptionModalVisible(!optionModalVisible);
           }}>
           <View>
-            <View style={[styles.modalView, {marginTop: statusBarHeight + '50'}]}>
+            <View style={[styles.modalView, {marginTop: statusBarHeight + 50}]}>
               <Text style={styles.modalText}>Adjust steerage:</Text>
               <View style={styles.inputWrapper}>
                 <Text style={styles.inputText}>Left Max turn:</Text>
